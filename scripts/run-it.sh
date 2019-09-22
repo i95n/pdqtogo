@@ -1,0 +1,1 @@
+docker run -it --rm -v $PWD/app:/app -w /app -p 8080:8080 pdqtogo /bin/bash
