@@ -1,5 +1,6 @@
 require 'sinatra'
 require "sinatra/json"
+require 'open3'
 
 set :protection, except: [ :json_csrf ]
 
@@ -13,6 +14,17 @@ get '/' do
 end
 
 get '/demo' do
-  content_type :text
-  `perl ./mm1.pl`
+  	content_type :text
+
+	cmd = 'perl ./mm1.pl'
+
+	result = ""
+	error = ""
+
+	Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
+	  result = stdout.read
+	  error = stderr.read
+	end
+
+  	result
 end
