@@ -1,0 +1,1 @@
+docker run -it --entrypoint /bin/sh -w /app -p 8080:8080 pdqtogo
