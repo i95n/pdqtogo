@@ -1,1 +1,1 @@
-docker run -it --entrypoint /bin/sh -w /app -p 8080:8080 pdqtogo
+docker run -it --entrypoint /bin/sh -v $PWD/app:/demo -w /app -p 8080:8080 pdqtogo

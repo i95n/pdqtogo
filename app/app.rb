@@ -11,3 +11,8 @@ set :bind, '0.0.0.0'
 get '/' do
   json({"Hello" => "World!"})
 end
+
+get '/demo' do
+  content_type :text
+  `perl ./mm1.pl`
+end
