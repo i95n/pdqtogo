@@ -51,5 +51,10 @@ post '/solve' do
 	  error = stderr.read
 	end
 
-  	result
+	if error.nil? || error.empty?
+  		return result
+	else
+		return error
+	end
+
 end
