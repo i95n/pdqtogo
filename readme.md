@@ -1,0 +1,49 @@
+# PDQ to go!
+> The old good PDQ on web!
+
+I used to do back of the envelope scalability calculations. That plain out crazy if you talk to professional queuing system cognoseur. YOU can do better, use `PDQ to Go`!
+
+![](docs/gopdq-demo.mov)
+
+## Run locally
+
+OS X & Linux & Windows:
+
+```sh
+docker pull i95north/pdqtogo:latest
+```
+
+## Development setup
+
+The develpment environment is intentionally boring. As long as you have docker running then `it should just work`
+
+```sh
+// rebuild
+sh scripts/rebuild-continer.sh
+
+// this how you run it in development mode
+sh scripts/run-bash-it.sh
+
+// run it like in prod
+sh scripts/run-it.sh
+```
+
+## Contributing
+
+1. Fork it (<https://github.com/i95north/pdqtogo/fork>)
+2. Create your feature branch (`git checkout -b feature/fooBar`)
+3. Commit your changes (`git commit -am 'Add some fooBar'`)
+4. Push to the branch (`git push origin feature/fooBar`)
+5. Create a new Pull Request
+
+## Authors
+
+* **Ruslan Rusu** - *Initial work* 
+
+## License
+
+This project is licensed under the MIT License - see the https://opensource.org/licenses/MIT
+
+## Acknowledgments
+
+* [Neil Gunther, @DrQz](https://twitter.com/DrQz)
