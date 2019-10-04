@@ -26,6 +26,9 @@ sh scripts/run-bash-it.sh
 
 // run it like in prod
 sh scripts/run-it.sh
+
+// run in prod
+sh docker run -d -p 80:8080 i95north/pdqtogo:latest
 ```
 
 ## Contributing
