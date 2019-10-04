@@ -1,7 +1,7 @@
 # PDQ to go!
 > The old good PDQ on web!
 
-I used to do back of the envelope scalability calculations. That plain out crazy if you talk to professional queuing system cognoseur. YOU can do better, use `PDQ to Go`!
+I was dreaming one day to be able to do back of the envelope scalability calculations. Like if i provision faster CPUs, or run 2 nodes side by side, or maybe sharding, or how much headroom is left. Now YOU can, use [PDQtoGO](http://pdqtogo.com)!
 
 ![](docs/gopdq-demo.mov)
 
