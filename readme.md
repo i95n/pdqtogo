@@ -3,7 +3,7 @@
 
 I was dreaming one day to be able to do back of the envelope scalability calculations. Like if i provision faster CPUs, or run 2 nodes side by side, or maybe sharding, or how much headroom is left. Now YOU can, use [PDQtoGO](http://pdqtogo.com)!
 
-![](docs/gopdq-demo.gif)
+<img src="docs/gopdq-demo.gif" alt="Schema" style="max-width:100%;"/>
 
 ## Run locally
 
