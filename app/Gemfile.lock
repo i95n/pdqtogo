@@ -3,11 +3,15 @@ GEM
   specs:
     backports (3.6.8)
     multi_json (1.11.2)
-    rack (1.6.4)
+    passenger (6.0.4)
+      rack
+      rake (>= 0.8.1)
+    rack (1.6.11)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
+    rake (13.0.0)
     sinatra (1.4.7)
       rack (~> 1.5)
       rack-protection (~> 1.4)
@@ -25,6 +29,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  passenger (>= 5.0.11)
   sinatra
   sinatra-contrib
 
