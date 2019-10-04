@@ -1,41 +1,133 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
+<head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+    <title>Pretty Damn Quick Performance Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="style-bs.min.css">
+    <link rel="stylesheet" href="custom.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.css" />
 
-    <style type="text/css">
+    <script>
 
+    </script>
+    <style>
+        body {
+            padding-top: 0px;
+        }
+
+        .page-header h1 {
+            font-size: 5rem;
+        }
+
+        .text-center {
+            margin:30px;
+        }
+        .bs-docs-section{
+            margin-top:12em;
+            margin-bottom:12em;
+        }
     </style>
+</head>
+<body>
 
-    <title>PDQ to go!</title>
-  </head>
-  <body>
+<div class="container">
 
-    <div class="container py-5">
+    <div class="page-header" id="banner">
+
+
         <div class="row">
-            <div class="col-md-12 mx-auto">
-                <form>
-                    <div class="form-group row" >
-                        <div class="col-sm-6">
-                            <label for="inputFirstname">Model</label>
-                            <textarea class="form-control" id="model" ></textarea>
-                        </div>
-                        <div class="col-sm-6">
-                            <label for="inputLastname">Result</label>
-                            <textarea class="form-control" id="result"></textarea>
-                        </div>
+            <div class="col-lg-12">
+                <div class="bs-component">
+                    <div class="jumbotron">
+                        <h1><b>PDQ</b></h1>
+                        <p class="lead">Pretty Damn Quick Performance Analyzer.</p>
+                        <hr class="my-4">
+                        <p>
+                            <a href="http://www.perfdynamics.com/Tools/PDQ.html">What is PDQ?</a> |
+                            <a href="http://www.perfdynamics.com/Tools/PDQman.html">Manual</a> |
+                            <a href="http://www.perfdynamics.com/Tools/PDQcode.html">Code</a>
+                        </p>
                     </div>
-                </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+    <!-- Dialogs
+    ================================================== -->
+    <div class="bs-docs-section">
+
+        <div class="row">
+            <div class="col-lg-12">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <h2 class="text-center">Input</h2>
+                <div class="bs-component">
+                    <textarea class="form-control" id="model" ></textarea>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <h2 class="text-center">Output</h2>
+                <div class="bs-component" style="margin-bottom: 3em;">
+                    <textarea class="form-control" id="result"></textarea>
+                </div>
             </div>
         </div>
     </div>
+
+    <div class="bs-docs-section">
+        <!-- Blockquotes -->
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="bs-component">
+                    <blockquote class="blockquote">
+                        <p class="mb-0">May your Perl PDQs be PDQ pearls.</p>
+                        <footer class="blockquote-footer"><cite title="Source Title">Neil Gunther <a href="https://twitter.com/DrQz">@DrQz</a></cite></footer>
+                    </blockquote>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="bs-component">
+                    <blockquote class="blockquote text-center">
+                        <p class="mb-0">Blown away by PDQ. You get instant feedback for topology and optimization changes.</p>
+                        <footer class="blockquote-footer"><cite title="Source Title">Ruslan Rusu</cite></footer>
+                    </blockquote>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="bs-component">
+                    <blockquote class="blockquote text-right">
+                        <p class="mb-0">I went to the grocery store this week and discovered that I will never look at a grocery checkout lane the same again!</p>
+                        <footer class="blockquote-footer"><cite title="Source Title">Henry Colonna</cite></footer>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer id="footer">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <p>Code released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
+                <p>Based on <a href="https://getbootstrap.com" rel="nofollow">Bootstrap</a>. Icons from <a href="https://fontawesome.com/" rel="nofollow">Font Awesome</a>. Web fonts from <a href="https://fonts.google.com/" rel="nofollow">Google</a>.</p>
+
+            </div>
+        </div>
+
+    </footer>
+
+
+</div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

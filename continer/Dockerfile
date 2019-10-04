@@ -36,6 +36,6 @@ RUN bundle install
 
 ADD app/. /app
 
-
+USER nobody
 
 ENTRYPOINT ["ruby", "app.rb"]
