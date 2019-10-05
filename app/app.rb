@@ -15,22 +15,6 @@ get '/' do
   File.read(File.join('public', 'index.html'))
 end
 
-get '/demo' do
-  	content_type :text
-
-	cmd = 'perl ./mm1.pl'
-
-	result = ""
-	error = ""
-
-	Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
-	  result = stdout.read
-	  error = stderr.read
-	end
-
-  	result
-end
-
 get '/model' do
   	content_type :text
 	IO.read("./mm1.pl")

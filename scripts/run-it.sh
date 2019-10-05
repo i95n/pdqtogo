@@ -1,1 +1,1 @@
-docker run -it --rm -v $PWD/app:/app -w /app -p 8080:8080 pdqtogo /bin/bash
+docker run -d -p 8080:8080 pdqtogo:latest
