@@ -28,6 +28,9 @@
             margin-top:12em;
             margin-bottom:12em;
         }
+        .pane-hader{
+            height: 35px;    
+        }
     </style>
 </head>
 <body>
@@ -71,12 +74,21 @@
             <div class="col-lg-6">
                 <h2 class="text-center">Input</h2>
                 <div class="bs-component">
+                    <div class="pane-hader">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                          <button id="mm1.pl" type="button" class="btn btn-secondary sample">#perl</button>
+                          <button id="mm1.py" type="button" class="btn btn-secondary sample">#python</button>
+                        </div>
+                    </div>
+
                     <textarea class="form-control" id="model" ></textarea>
                 </div>
             </div>
             <div class="col-lg-6">
                 <h2 class="text-center">Output</h2>
                 <div class="bs-component" style="margin-bottom: 3em;">
+                    <div class="pane-hader">
+                    </div>
                     <textarea class="form-control" id="result"></textarea>
                 </div>
             </div>
@@ -158,8 +170,18 @@
         modelEditor.setSize("100%", "100%");
         resultsEditor.setSize("100%", "100%");
 
-        $.get("/model", function( data ) {
+        $.get("/model?name=mm1.pl", function( data ) {
             modelEditor.getDoc().setValue(data)
+        });
+
+        $(".sample").click(function(event) {
+            id = $(this).attr('id')
+            
+            $.get("/model?name=" + id, function( data ) {
+                modelEditor.getDoc().setValue(data)
+            });
+
+            event.preventDefault();
         });
 
         modelEditor.on('change',function(cMirror){

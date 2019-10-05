@@ -17,7 +17,8 @@ end
 
 get '/model' do
   	content_type :text
-	IO.read("./models/mm1.py")
+  	name = params[:name]
+	IO.read("./samples/#{name}")
 end
 
 post '/solve' do
