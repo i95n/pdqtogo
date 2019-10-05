@@ -23,17 +23,27 @@ RUN cd /usr/src && \
 ENV PATH $RUBY_INSTALL/bin:$PATH
 
 
-RUN yum -y install perl-devel perl-ExtUtils-Embed
+# PDQ
+# --------------------------------------------------------------------------------------------------------------
+#
 ADD libs/. /pdq
-RUN cd /pdq && tar -zxvf pdq-6.2.0-pl.tar.gz && cd /pdq/pdq-6.2.0 && perl Makefile.PL && make && make install
+
+# Perl
+RUN yum -y install perl-devel perl-ExtUtils-Embed
+RUN cd /pdq && tar -zxvf pdq-6.2.0-pl.tar.gz && mv pdq-6.2.0 pdq-6.2.0-pl && cd pdq-6.2.0-pl && perl Makefile.PL && make && make install
+
+# Python
+RUN yum -y install python-devel
+RUN cd /pdq && tar -zxvf pdq-6.2.0-py.tar.gz && mv pdq-6.2.0 pdq-6.2.0-py && cd pdq-6.2.0-py && python setup.py install
 
 
+# UI
+# --------------------------------------------------------------------------------------------------------------
+#
 WORKDIR /app
 ADD app/Gemfile* /app/
-
 RUN gem install bundler -v '1.17.3'
 RUN bundle install
-
 ADD app/. /app
 RUN sed -i "s/Version: 0000/Build: $(date)/g" /app/public/index.html
 
