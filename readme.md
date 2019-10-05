@@ -1,7 +1,13 @@
 # PDQ to go!
-> The old good PDQ on web!
+> Can I have it with fires ?
 
-I was dreaming one day to be able to do back of the envelope scalability calculations. Like if i provision faster CPUs, or run 2 nodes side by side, or maybe sharding, or how much headroom is left. Now YOU can, use [PDQtoGO](http://pdqtogo.com)!
+I was dreaming one day to be able to do back of the envelope scalability calculations. Like if i provision faster CPUs, or run 2 nodes side by side, or maybe sharding, or how much headroom is left. 
+
+Later I discvered the oustanding work Neil Gunter did - `PDQ: *Pretty Damn Quick* Performance Analyzer`. Read more on author's wesite [What is PDQ?](http://www.perfdynamics.com/Tools/PDQ.html). There you can get the binaries and run it yourself. It comes in different flavours perl, r, python,c. 
+
+This projects packages all PDQ goodies for web, demo [PDQtoGO](http://pdqtogo.com)!
+
+
 
 <img src="docs/gopdq-demo.gif" alt="Schema" style="max-width:100%;"/>
 

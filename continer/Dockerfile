@@ -25,7 +25,7 @@ ENV PATH $RUBY_INSTALL/bin:$PATH
 
 RUN yum -y install perl-devel perl-ExtUtils-Embed
 ADD libs/. /pdq
-RUN cd /pdq && tar -zxvf pdq-6.2.0.tar.gz && cd /pdq/pdq-6.2.0 && perl Makefile.PL && make && make install
+RUN cd /pdq && tar -zxvf pdq-6.2.0-pl.tar.gz && cd /pdq/pdq-6.2.0 && perl Makefile.PL && make && make install
 
 
 WORKDIR /app
@@ -35,6 +35,7 @@ RUN gem install bundler -v '1.17.3'
 RUN bundle install
 
 ADD app/. /app
+RUN sed -i "s/Version: 0000/Build: $(date)/g" /app/public/index.html
 
 USER nobody
 
