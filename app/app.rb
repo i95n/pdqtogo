@@ -17,7 +17,7 @@ end
 
 get '/model' do
   	content_type :text
-	IO.read("./mm1.pl")
+	IO.read("./models/mm1.py")
 end
 
 post '/solve' do
@@ -30,7 +30,17 @@ post '/solve' do
 
 	pp model
 
-	Open3.popen3("perl -e '#{model}'") do |stdin, stdout, stderr, wait_thr|
+	evaluator = ""
+
+	if model.include? "use pdq;"
+	   evaluator = "perl -e '#{model}'"
+	elsif model.include? "import pdq"
+	   evaluator = "python -c '#{model}'"
+	else
+	   evaluator = "unsupported interpretter :(. try python or perl"
+	end
+
+	Open3.popen3(evaluator) do |stdin, stdout, stderr, wait_thr|
 	  result = stdout.read
 	  error = stderr.read
 	end
