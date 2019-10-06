@@ -41,11 +41,12 @@ RUN cd /pdq && tar -zxvf pdq-6.2.0-py.tar.gz && mv pdq-6.2.0 pdq-6.2.0-py && cd 
 # --------------------------------------------------------------------------------------------------------------
 #
 WORKDIR /app
-ADD app/Gemfile* /app/
+ADD app/. /app
 RUN gem install bundler -v '1.17.3'
 RUN bundle install
-ADD app/. /app
-RUN sed -i "s/Version: 0000/Build: $(date)/g" /app/public/index.html
+
+ADD version.txt /app
+RUN sed -i "s/Version: 0000/Build: $(cat /app/version.txt)/g" /app/public/index.html
 
 USER nobody
 
