@@ -32,7 +32,7 @@
             margin-top:1em;
         }
         .center-type{
-            width:250px;
+            width:300px;
             margin-bottom: 30px;
         }
         .add-row-spacing{
@@ -197,7 +197,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row  add-row-spacing">
             <div class="col-lg-4">
                 <div class="bs-component">
                     <img src="pics/multiserver-q.jpg" class="center-type">
@@ -231,7 +231,115 @@
             </div>
         </div>
 
+        <div class="row  add-row-spacing">
+            <div class="col-lg-4">
+                <div class="bs-component">
+                    <img src="pics/serial-f.jpg" class="center-type">
+                    <h3>Serial functions</h3>
+                    <p class="card-text"></p>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="bs-component">
+                    <pre>
+
+        use pdq;
+
+        $arrivRate = 0.75;
+        $servTime  = 1.0;
+
+        pdq::Init("Serial functions");
+        pdq::CreateOpen("Work", $arrivRate);
+
+        pdq::CreateNode("Step1", $pdq::CEN, $pdq::FCFS);  
+        pdq::SetDemand("Step1", "Work", $servTime);
+
+        pdq::CreateNode("Step2", $pdq::CEN, $pdq::FCFS);  
+        pdq::SetDemand("Step2", "Work", $servTime);
+
+        pdq::Solve($pdq::CANON);
+        pdq::Report();
+
+                    </pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="row  add-row-spacing">
+            <div class="col-lg-4">
+                <div class="bs-component">
+                    <img src="pics/parallel-f.jpg" class="center-type">
+                    <h3>Parallel functions</h3>
+                    <p class="card-text"></p>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="bs-component">
+                    <pre>
+
+        use pdq;
+
+        $arrivRate = 0.75;
+        $servTime  = 1.0;
+        
+        $pBranch1 = 0.3;
+        $pBranch2 = 1 - 0.3;
+
+        pdq::Init("Parallel functions");
+        pdq::CreateOpen("Work", $arrivRate);
+
+        pdq::CreateNode("Branch1", $pdq::CEN, $pdq::FCFS);  
+        pdq::SetDemand("Branch1", "Work", $servTime * $pBranch1);
+
+        pdq::CreateNode("Branch2", $pdq::CEN, $pdq::FCFS);  
+        pdq::SetDemand("Branch2", "Work", $servTime * $pBranch2);
+
+        pdq::Solve($pdq::CANON);
+        pdq::Report();
+
+                    </pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="row  add-row-spacing">
+            <div class="col-lg-4">
+                <div class="bs-component">
+                    <img src="pics/repetition-f.jpg" class="center-type">
+                    <h3>Repetition function</h3>
+                    <p class="card-text"></p>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="bs-component">
+                    <pre>
+
+        use pdq;
+
+        $arrivRate = 0.75;
+        $servTime  = 1.0;
+        
+        $returnsProb = 0.1;
+        $meanVisits = 1.0 / (1 - $returnsProb);
+
+        pdq::Init("Repetition function");
+        pdq::CreateOpen("Work", $arrivRate);
+
+        pdq::CreateNode("Server", $pdq::CEN, $pdq::FCFS);  
+        pdq::SetVisits("Server", "Work", $meanVisits, $servTime);
+
+        pdq::Solve($pdq::CANON);
+        pdq::Report();
+
+                    </pre>
+                </div>
+            </div>
+        </div>
+
+
     </div>
+
+
 
     <!-- 
     ================================================== -->
