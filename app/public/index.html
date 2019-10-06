@@ -25,7 +25,8 @@
             margin-bottom:40em;
         }
         .pane-hader{
-            height: 35px;    
+            height: 35px; 
+
         }
         .bs-docs-section .page-header h1{
             margin-top:1em;
@@ -34,13 +35,16 @@
             width:250px;
             margin-bottom: 30px;
         }
+        .add-row-spacing{
+            margin-bottom: 70px;
+        }
     </style>
 </head>
 <body>
 
 <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
       <div class="container">
-        <a href="#home" class="navbar-brand">PDQtoGo /* Pretty Damn Quick Performance Analyzer */</a>
+        <a href="#home" class="navbar-brand">PDQtoGo</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -56,10 +60,10 @@
               <a class="nav-link" href="http://www.perfdynamics.com/Tools/PDQman.html">Manual</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#testimonials">Testimonials</a>
+              <a class="nav-link" href="#samples">Samples</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#samples">Samples</a>
+              <a class="nav-link" href="#testimonials">Testimonials</a>
             </li>
           </ul>
 
@@ -80,7 +84,7 @@
         <div class="page-header">
           <div class="row">
             <div class="col-lg-12">
-              <h1 id="buttons" >Live builder</h1>
+              <h1 id="buttons" >Live model builder</h1>
             </div>
           </div>
         </div>
@@ -120,13 +124,13 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <div class="row add-row-spacing">
             <div class="col-lg-4">
                 <div class="bs-component">
                     <div class="pane-hader">
                         <img src="pics/single-q.jpg" class="center-type">
                         <h3>Single queue center</h3>
-                        <p class="card-text">Used to model single processor systems or to model individual devices in a computer system. Notation: M/M/1.</p>
+                        <p class="card-text">Used to model single processor systems, individual devices or software process in a computer system. Notation: M/M/1, M/D/1, M/G/1</p>
                     </div>
                 </div>
             </div>
@@ -136,31 +140,16 @@
 
         use pdq;
 
-        # Globals
         $arrivRate = 0.75;
         $servTime  = 1.0;
 
-        # Initialize PDQ and add a comment about the model
         pdq::Init("Open Network with M/M/1");
-
-        # Define the workload and circuit type
         pdq::CreateOpen("Work", $arrivRate);
 
-        # Define the queueing center
         pdq::CreateNode("Server", $pdq::CEN, $pdq::FCFS);  
-
-        # Define service demand due to workload on the queueing center
         pdq::SetDemand("Server", "Work", $servTime);
 
-        # Change units labels to suit
-        pdq::SetWUnit("Cust");
-        pdq::SetTUnit("Secs");
-
-        # Solve the model
-        #  Must use the Canonical method for an open network
         pdq::Solve($pdq::CANON);
-
-        # Generate a generic performance report
         pdq::Report();
 
                     </pre>
@@ -168,13 +157,13 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row add-row-spacing">
             <div class="col-lg-4">
                 <div class="bs-component">
                     <div class="pane-hader">
                         <img src="pics/parallel-q.jpg" class="center-type">
                         <h3>Parallel queue centers</h3>
-                        <p class="card-text">Used to describe a set of parralel centers or devices in a system where each center has its own input queue. Individually each service center is M/M/1.</p>
+                        <p class="card-text">Used to describe a set of parallel centers or devices in a system where each center has its own input queue. Individually each service center is M/M/1, M/D/1, M/G/1.</p>
                     </div>
                 </div>
             </div>
@@ -184,31 +173,21 @@
 
         use pdq;
 
-        # Globals
+        $servers = 5;
+
         $arrivRate = 0.75;
         $servTime  = 1.0;
 
-        # Initialize PDQ and add a comment about the model
-        pdq::Init("Open Network with M/M/1");
-
-        # Define the workload and circuit type
+        pdq::Init("Open Network with n(M/M/1)");
         pdq::CreateOpen("Work", $arrivRate);
 
-        # Define the queueing center
-        pdq::CreateNode("Server", $pdq::CEN, $pdq::FCFS);  
+        for($d=1; $d<=$servers; $d++){
+            $sname = "Server-" . $d;
+            pdq::CreateNode($sname, $pdq::CEN, $pdq::FCFS);  
+            pdq::SetDemand($sname, "Work", $servTime / $servers);
+        }
 
-        # Define service demand due to workload on the queueing center
-        pdq::SetDemand("Server", "Work", $servTime);
-
-        # Change units labels to suit
-        pdq::SetWUnit("Cust");
-        pdq::SetTUnit("Secs");
-
-        # Solve the model
-        #  Must use the Canonical method for an open network
         pdq::Solve($pdq::CANON);
-
-        # Generate a generic performance report
         pdq::Report();
 
                     </pre>
@@ -221,7 +200,7 @@
                 <div class="bs-component">
                     <img src="pics/multiserver-q.jpg" class="center-type">
                     <h3>Multiserver single queue</h3>
-                    <p class="card-text">Used to model multiprocessor systems or devices that have several identical servers and all jobs waiting for these servers are kept in one queue. Notation: M/M/m.</p>
+                    <p class="card-text">Used to model multiprocessor systems or devices that have several identical servers and all jobs waiting for these servers are kept in one queue. Notation: M/M/m, M/D/m, M/G/m.</p>
                 </div>
             </div>
             <div class="col-lg-8">
@@ -229,32 +208,19 @@
                     <pre>
 
         use pdq;
+        
+        $servers = 5;
 
-        # Globals
         $arrivRate = 0.75;
         $servTime  = 1.0;
 
-        # Initialize PDQ and add a comment about the model
-        pdq::Init("Open Network with M/M/1");
-
-        # Define the workload and circuit type
+        pdq::Init("Open Network with M/M/m)");
         pdq::CreateOpen("Work", $arrivRate);
 
-        # Define the queueing center
-        pdq::CreateNode("Server", $pdq::CEN, $pdq::FCFS);  
+        pdq::CreateMultiNode($servers, "5servers", $pdq::CEN, $pdq::FCFS);  
+        pdq::SetDemand("5servers", "Work", $servTime);
 
-        # Define service demand due to workload on the queueing center
-        pdq::SetDemand("Server", "Work", $servTime);
-
-        # Change units labels to suit
-        pdq::SetWUnit("Cust");
-        pdq::SetTUnit("Secs");
-
-        # Solve the model
-        #  Must use the Canonical method for an open network
         pdq::Solve($pdq::CANON);
-
-        # Generate a generic performance report
         pdq::Report();
 
                     </pre>
@@ -304,7 +270,7 @@
             </div>
         </div>
     </div>
-    
+
 
     <footer id="footer">
         <div class="row">
