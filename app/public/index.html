@@ -13,10 +13,6 @@
 
     </script>
     <style>
-        body {
-            padding-top: 0px;
-        }
-
         .page-header h1 {
             font-size: 5rem;
         }
@@ -25,50 +21,72 @@
             margin:30px;
         }
         .bs-docs-section{
-            margin-top:12em;
-            margin-bottom:12em;
+            margin-top:0em;
+            margin-bottom:40em;
         }
         .pane-hader{
-            height: 35px;    
+            height: 35px; 
+
+        }
+        .bs-docs-section .page-header h1{
+            margin-top:1em;
+        }
+        .center-type{
+            width:250px;
+            margin-bottom: 30px;
+        }
+        .add-row-spacing{
+            margin-bottom: 70px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+      <div class="container">
+        <a href="#home" class="navbar-brand">PDQtoGo</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="#builder">Builder</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="http://www.perfdynamics.com/Tools/PDQ.html">Guide</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="http://www.perfdynamics.com/Tools/PDQman.html">Manual</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#samples">Samples</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#testimonials">Testimonials</a>
+            </li>
+          </ul>
 
-    <div class="page-header" id="banner">
-
-
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="bs-component">
-                    <div class="jumbotron">
-                        <h1><b>PDQ</b></h1>
-                        <p class="lead">Pretty Damn Quick Performance Analyzer.</p>
-                        <hr class="my-4">
-                        <p>
-                            <a href="http://www.perfdynamics.com/Tools/PDQ.html">What is PDQ?</a> |
-                            <a href="http://www.perfdynamics.com/Tools/PDQman.html">Manual</a> |
-                            <a href="http://www.perfdynamics.com/Tools/PDQcode.html">Code</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
         </div>
-
+      </div>
     </div>
 
 
+<div class="container">
 
+    
 
     <!-- Dialogs
     ================================================== -->
+    <a name="home"></a> 
+    <a name="builder"></a> 
     <div class="bs-docs-section">
-
-        <div class="row">
+        <div class="page-header">
+          <div class="row">
             <div class="col-lg-12">
+              <h1 id="buttons" >Live model builder</h1>
             </div>
+          </div>
         </div>
         <div class="row">
             <div class="col-lg-6">
@@ -95,9 +113,136 @@
         </div>
     </div>
 
+    <!-- 
+    ================================================== -->
+    <a name="samples" class="ancorage"></a> 
+    <div class="bs-docs-section">
+        <div class="page-header">
+          <div class="row">
+            <div class="col-lg-12">
+              <h1 id="buttons">Samples</h1>
+            </div>
+          </div>
+        </div>
+        <div class="row add-row-spacing">
+            <div class="col-lg-4">
+                <div class="bs-component">
+                    <div class="pane-hader">
+                        <img src="pics/single-q.jpg" class="center-type">
+                        <h3>Single queue center</h3>
+                        <p class="card-text">Used to model single processor systems, individual devices or software process in a computer system. Notation: M/M/1, M/D/1, M/G/1</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="bs-component">
+                    <pre>
+
+        use pdq;
+
+        $arrivRate = 0.75;
+        $servTime  = 1.0;
+
+        pdq::Init("Open Network with M/M/1");
+        pdq::CreateOpen("Work", $arrivRate);
+
+        pdq::CreateNode("Server", $pdq::CEN, $pdq::FCFS);  
+        pdq::SetDemand("Server", "Work", $servTime);
+
+        pdq::Solve($pdq::CANON);
+        pdq::Report();
+
+                    </pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="row add-row-spacing">
+            <div class="col-lg-4">
+                <div class="bs-component">
+                    <div class="pane-hader">
+                        <img src="pics/parallel-q.jpg" class="center-type">
+                        <h3>Parallel queue centers</h3>
+                        <p class="card-text">Used to describe a set of parallel centers or devices in a system where each center has its own input queue. Individually each service center is M/M/1, M/D/1, M/G/1.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="bs-component">
+                    <pre>
+
+        use pdq;
+
+        $servers = 5;
+
+        $arrivRate = 0.75;
+        $servTime  = 1.0;
+
+        pdq::Init("Open Network with n(M/M/1)");
+        pdq::CreateOpen("Work", $arrivRate);
+
+        for($d=1; $d<=$servers; $d++){
+            $sname = "Server-" . $d;
+            pdq::CreateNode($sname, $pdq::CEN, $pdq::FCFS);  
+            pdq::SetDemand($sname, "Work", $servTime / $servers);
+        }
+
+        pdq::Solve($pdq::CANON);
+        pdq::Report();
+
+                    </pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="bs-component">
+                    <img src="pics/multiserver-q.jpg" class="center-type">
+                    <h3>Multiserver single queue</h3>
+                    <p class="card-text">Used to model multiprocessor systems or devices that have several identical servers and all jobs waiting for these servers are kept in one queue. Notation: M/M/m, M/D/m, M/G/m.</p>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="bs-component">
+                    <pre>
+
+        use pdq;
+        
+        $servers = 5;
+
+        $arrivRate = 0.75;
+        $servTime  = 1.0;
+
+        pdq::Init("Open Network with M/M/m)");
+        pdq::CreateOpen("Work", $arrivRate);
+
+        pdq::CreateMultiNode($servers, "5servers", $pdq::CEN, $pdq::FCFS);  
+        pdq::SetDemand("5servers", "Work", $servTime);
+
+        pdq::Solve($pdq::CANON);
+        pdq::Report();
+
+                    </pre>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 
+    ================================================== -->
+    <a name="testimonials"></a>  
     <div class="bs-docs-section">
         <!-- Blockquotes -->
-
+        <div class="page-header">
+          <div class="row">
+            <div class="col-lg-12">
+              <h1 id="buttons" >Testimonials</h1>
+            </div>
+          </div>
+        </div>
+        
         <div class="row">
             <div class="col-lg-4">
                 <div class="bs-component">
@@ -126,9 +271,16 @@
         </div>
     </div>
 
+
     <footer id="footer">
         <div class="row">
             <div class="col-lg-12">
+
+                <ul class="list-unstyled">
+                  <li><a href="https://twitter.com/ruslanrusu">Twitter</a></li>
+                  <li><a href="https://github.com/i95north/pdqtogo">GitHub</a></li>
+                </ul>
+                <p>Made by <a href="https://twitter.com/ruslanrusu">Ruslan Rusu</a>.</p>
 
                 <p>Code released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
                 <p>Based on <a href="https://getbootstrap.com" rel="nofollow">Bootstrap</a>. Icons from <a href="https://fontawesome.com/" rel="nofollow">Font Awesome</a>. Web fonts from <a href="https://fonts.google.com/" rel="nofollow">Google</a>.</p>
