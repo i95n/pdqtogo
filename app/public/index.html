@@ -60,7 +60,7 @@
               <a class="nav-link" href="http://www.perfdynamics.com/Tools/PDQman.html">Manual</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#samples">Samples</a>
+              <a class="nav-link" href="#examples">Examples</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#testimonials">Testimonials</a>
@@ -84,7 +84,7 @@
         <div class="page-header">
           <div class="row">
             <div class="col-lg-12">
-              <h1 id="buttons" >Live model builder</h1>
+              <h1 id="buttons" >PDQ builder</h1>
             </div>
           </div>
         </div>
@@ -115,12 +115,12 @@
 
     <!-- 
     ================================================== -->
-    <a name="samples" class="ancorage"></a> 
+    <a name="examples" class="ancorage"></a> 
     <div class="bs-docs-section">
         <div class="page-header">
           <div class="row">
             <div class="col-lg-12">
-              <h1 id="buttons">Samples</h1>
+              <h1 id="buttons">Examples</h1>
             </div>
           </div>
         </div>
@@ -130,7 +130,8 @@
                     <div class="pane-hader">
                         <img src="pics/single-q.jpg" class="center-type">
                         <h3>Single queue center</h3>
-                        <p class="card-text">Used to model single processor systems, individual devices or software process in a computer system. Notation: M/M/1, M/D/1, M/G/1</p>
+                        <p class="card-text">Used to model single processor systems, individual devices or software process in a computer system. The office internet router.</p>
+                        <p class="card-text">M/M/1, M/D/1, M/G/1</p>
                     </div>
                 </div>
             </div>
@@ -163,7 +164,8 @@
                     <div class="pane-hader">
                         <img src="pics/parallel-q.jpg" class="center-type">
                         <h3>Parallel queue centers</h3>
-                        <p class="card-text">Used to describe a set of parallel centers or devices in a system where each center has its own input queue. Individually each service center is M/M/1, M/D/1, M/G/1.</p>
+                        <p class="card-text">Used to describe a set of parallel centers or devices in a system where each center has its own input queue. A big MegaMart with dozens of checkout lines.</p>
+                        <p class="card-text">M/M/1, M/D/1, M/G/1</p>
                     </div>
                 </div>
             </div>
@@ -173,7 +175,7 @@
 
         use pdq;
 
-        $servers = 5;
+        $servers = 3;
 
         $arrivRate = 0.75;
         $servTime  = 1.0;
@@ -200,7 +202,8 @@
                 <div class="bs-component">
                     <img src="pics/multiserver-q.jpg" class="center-type">
                     <h3>Multiserver single queue</h3>
-                    <p class="card-text">Used to model multiprocessor systems or devices that have several identical servers and all jobs waiting for these servers are kept in one queue. Notation: M/M/m, M/D/m, M/G/m.</p>
+                    <p class="card-text">Used to model multiprocessor systems or devices that have several identical servers and all jobs waiting for these servers are kept in one queue. The post office or bank where one line will feed multiple clerks.</p>
+                    <p class="card-text">M/M/m, M/D/m, M/G/m</p>
                 </div>
             </div>
             <div class="col-lg-8">
@@ -209,7 +212,7 @@
 
         use pdq;
         
-        $servers = 5;
+        $servers = 3;
 
         $arrivRate = 0.75;
         $servTime  = 1.0;
