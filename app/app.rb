@@ -37,6 +37,8 @@ post '/solve' do
 	   evaluator = "perl -e '#{model}'"
 	elsif model.include? "import pdq"
 	   evaluator = "python -c '#{model}'"
+	elsif model.include? "library(pdq)"
+	   evaluator = "Rscript -e '#{model}'"
 	else
 	   evaluator = "unsupported interpretter :(. try python or perl"
 	end
@@ -47,9 +49,18 @@ post '/solve' do
 	end
 
 	if error.nil? || error.empty?
+		result = format_output(result)
+		pp result
   		return result
 	else
+		pp error
 		return error
 	end
 
+end
+
+def format_output(result)
+	result
+		.gsub(/NULL\R+/, '')
+		.gsub(/\[1\] 0\n/, '')
 end
