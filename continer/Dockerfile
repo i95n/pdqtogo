@@ -39,7 +39,7 @@ RUN cd /pdq && tar -zxvf pdq-6.2.0-py.tar.gz && mv pdq-6.2.0 pdq-6.2.0-py && cd 
 # R
 RUN yum -y install epel-release
 RUN yum -y install R --nogpgcheck
-RUN cd /pdq && tar -zxvf pdq-6.2.0-r.tar.gz && mv pdq pdq-6.2.0-r #&& cd pdq-6.2.0-r && perl Makefile.PL && make && make install
+RUN cd /pdq && R CMD INSTALL pdq-6.2.0-r.tar.gz
 
 # UI
 # --------------------------------------------------------------------------------------------------------------
