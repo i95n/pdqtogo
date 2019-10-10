@@ -10,3 +10,5 @@ docker tag $imageid i95north/pdqtogo:$version
 echo "latest [pdqtogo#$imageid] was tagged with $version"
 
 docker push i95north/pdqtogo
+
+git tag -a v$version -m "Tagged version v$version"

@@ -94,9 +94,9 @@
                 <div class="bs-component">
                     <div class="pane-hader">
                         <div class="btn-group" role="group" aria-label="Basic example">
-                          <button id="mm1.pl" type="button" class="btn btn-secondary sample">#perl</button>
-                          <button id="mm1.py" type="button" class="btn btn-secondary sample">#python</button>
-                          <button id="mm1.r" type="button" class="btn btn-secondary sample">#r</button>
+                          <button id="mm1.pl" type="button" class="btn btn-secondary sample">perl</button>
+                          <button id="mm1.py" type="button" class="btn btn-secondary sample">python</button>
+                          <button id="mm1.r" type="button" class="btn btn-secondary sample">R</button>
                         </div>
                     </div>
 
@@ -247,16 +247,18 @@
         use pdq;
 
         $arrivRate = 0.75;
-        $servTime  = 1.0;
+        
+        $fAServTime  = 1.0;
+        $fBServTime  = 0.5;
 
-        pdq::Init("Serial functions");
+        pdq::Init("Serial functions a -> b");
         pdq::CreateOpen("Work", $arrivRate);
 
-        pdq::CreateNode("Step1", $pdq::CEN, $pdq::FCFS);  
-        pdq::SetDemand("Step1", "Work", $servTime);
+        pdq::CreateNode("Fa", $pdq::CEN, $pdq::FCFS);  
+        pdq::SetDemand("Fa", "Work", $fAServTime);
 
-        pdq::CreateNode("Step2", $pdq::CEN, $pdq::FCFS);  
-        pdq::SetDemand("Step2", "Work", $servTime);
+        pdq::CreateNode("Fb", $pdq::CEN, $pdq::FCFS);  
+        pdq::SetDemand("Fb", "Work", $fBServTime);
 
         pdq::Solve($pdq::CANON);
         pdq::Report();
@@ -281,19 +283,21 @@
         use pdq;
 
         $arrivRate = 0.75;
-        $servTime  = 1.0;
-        
+
+        $servTime1  = 1.0;
         $pBranch1 = 0.3;
-        $pBranch2 = 1 - 0.3;
+        
+        $servTime2  = 0.5;
+        $pBranch2 = 1 - $pBranch1;
 
         pdq::Init("Parallel functions");
         pdq::CreateOpen("Work", $arrivRate);
 
         pdq::CreateNode("Branch1", $pdq::CEN, $pdq::FCFS);  
-        pdq::SetDemand("Branch1", "Work", $servTime * $pBranch1);
+        pdq::SetDemand("Branch1", "Work", $servTime1 * $pBranch1);
 
         pdq::CreateNode("Branch2", $pdq::CEN, $pdq::FCFS);  
-        pdq::SetDemand("Branch2", "Work", $servTime * $pBranch2);
+        pdq::SetDemand("Branch2", "Work", $pBranch2 * $pBranch2);
 
         pdq::Solve($pdq::CANON);
         pdq::Report();
