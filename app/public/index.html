@@ -38,6 +38,36 @@
         .add-row-spacing{
             margin-bottom: 70px;
         }
+
+        .gutter {
+            background-color: #eee;
+
+            background-repeat: no-repeat;
+            background-position: 50%;
+        }
+
+        .gutter.gutter-vertical {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
+        }
+
+        .gutter.gutter-horizontal {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+        }
+
+        #flex {
+            display: flex;
+            flex-direction: row;
+            border: #cdcdcd medium solid;
+            border-radius: 10px;
+            -moz-border-radius: 10px;
+            -webkit-border-radius: 10px;
+        }
+
+        #flex:-webkit-full-screen {
+          background-color: white; 
+          width: 100%;
+          overflow:auto;
+        }
     </style>
 </head>
 <body>
@@ -58,9 +88,6 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="http://www.perfdynamics.com/Tools/PDQman.html">Manual</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#examples">Examples</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#testimonials">Testimonials</a>
@@ -89,262 +116,33 @@
           </div>
         </div>
         <div class="row">
-            <div class="col-lg-6">
-                <h2 class="text-center">Input</h2>
-                <div class="bs-component">
-                    <div class="pane-hader">
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                          <button id="mm1.pl" type="button" class="btn btn-secondary sample">perl</button>
-                          <button id="mm1.py" type="button" class="btn btn-secondary sample">python</button>
-                          <button id="mm1.r" type="button" class="btn btn-secondary sample">R</button>
+            <div class="col-lg-12" id="flex">
+                <div id="one">
+                    <h2 class="text-center">Input</h2>
+                    <div class="bs-component">
+                        <div class="pane-hader">
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                              <button id="mm1.pl" type="button" class="btn btn-secondary sample">perl</button>
+                              <button id="mm1.py" type="button" class="btn btn-secondary sample">python</button>
+                              <button id="mm1.r" type="button" class="btn btn-secondary sample">R</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <textarea class="form-control" id="model" ></textarea>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <h2 class="text-center">Output</h2>
-                <div class="bs-component" style="margin-bottom: 3em;">
-                    <div class="pane-hader">
+                        <textarea class="form-control" id="model" ></textarea>
                     </div>
-                    <textarea class="form-control" id="result"></textarea>
+                </div>
+                <div id="two">
+                    <h2 class="text-center">Output</h2>
+                    <div class="bs-component" style="margin-bottom: 3em;">
+                        <div class="pane-hader">
+                              <button id="fs-button" type="button" class="btn btn-secondary sample float-right">Zoom In/Out</button>
+                        </div>
+                        <textarea class="form-control" id="result"></textarea>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- 
-    ================================================== -->
-    <a name="examples" class="ancorage"></a> 
-    <div class="bs-docs-section">
-        <div class="page-header">
-          <div class="row">
-            <div class="col-lg-12">
-              <h1 id="buttons">Examples</h1>
-            </div>
-          </div>
-        </div>
-        <div class="row add-row-spacing">
-            <div class="col-lg-4">
-                <div class="bs-component">
-                    <div class="pane-hader">
-                        <img src="pics/single-q.jpg" class="center-type">
-                        <h3>Single queue center</h3>
-                        <p class="card-text">Used to model single processor systems, individual devices or software process in a computer system. The office internet router.</p>
-                        <p class="card-text">M/M/1, M/D/1, M/G/1</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <div class="bs-component">
-                    <pre>
-
-        use pdq;
-
-        $arrivRate = 0.75;
-        $servTime  = 1.0;
-
-        pdq::Init("Open Network with M/M/1");
-        pdq::CreateOpen("Work", $arrivRate);
-
-        pdq::CreateNode("Server", $pdq::CEN, $pdq::FCFS);  
-        pdq::SetDemand("Server", "Work", $servTime);
-
-        pdq::Solve($pdq::CANON);
-        pdq::Report();
-
-                    </pre>
-                </div>
-            </div>
-        </div>
-
-        <div class="row add-row-spacing">
-            <div class="col-lg-4">
-                <div class="bs-component">
-                    <div class="pane-hader">
-                        <img src="pics/parallel-q.jpg" class="center-type">
-                        <h3>Parallel queue centers</h3>
-                        <p class="card-text">Used to describe a set of parallel centers or devices in a system where each center has its own input queue. A big MegaMart with dozens of checkout lines.</p>
-                        <p class="card-text">M/M/1, M/D/1, M/G/1</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <div class="bs-component">
-                    <pre>
-
-        use pdq;
-
-        $servers = 3;
-
-        $arrivRate = 0.75;
-        $servTime  = 1.0;
-
-        pdq::Init("Open Network with n(M/M/1)");
-        pdq::CreateOpen("Work", $arrivRate);
-
-        for($d=1; $d<=$servers; $d++){
-            $sname = "Server-" . $d;
-            pdq::CreateNode($sname, $pdq::CEN, $pdq::FCFS);  
-            pdq::SetDemand($sname, "Work", $servTime / $servers);
-        }
-
-        pdq::Solve($pdq::CANON);
-        pdq::Report();
-
-                    </pre>
-                </div>
-            </div>
-        </div>
-
-        <div class="row  add-row-spacing">
-            <div class="col-lg-4">
-                <div class="bs-component">
-                    <img src="pics/multiserver-q.jpg" class="center-type">
-                    <h3>Multiserver single queue</h3>
-                    <p class="card-text">Used to model multiprocessor systems or devices that have several identical servers and all jobs waiting for these servers are kept in one queue. The post office or bank where one line will feed multiple clerks.</p>
-                    <p class="card-text">M/M/m, M/D/m, M/G/m</p>
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <div class="bs-component">
-                    <pre>
-
-        use pdq;
-        
-        $servers = 3;
-
-        $arrivRate = 0.75;
-        $servTime  = 1.0;
-
-        pdq::Init("Open Network with M/M/m)");
-        pdq::CreateOpen("Work", $arrivRate);
-
-        pdq::CreateMultiNode($servers, "5servers", $pdq::CEN, $pdq::FCFS);  
-        pdq::SetDemand("5servers", "Work", $servTime);
-
-        pdq::Solve($pdq::CANON);
-        pdq::Report();
-
-                    </pre>
-                </div>
-            </div>
-        </div>
-
-        <div class="row  add-row-spacing">
-            <div class="col-lg-4">
-                <div class="bs-component">
-                    <img src="pics/serial-f.jpg" class="center-type">
-                    <h3>Serial functions</h3>
-                    <p class="card-text"></p>
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <div class="bs-component">
-                    <pre>
-
-        use pdq;
-
-        $arrivRate = 0.75;
-        
-        $fAServTime  = 1.0;
-        $fBServTime  = 0.5;
-
-        pdq::Init("Serial functions a -> b");
-        pdq::CreateOpen("Work", $arrivRate);
-
-        pdq::CreateNode("Fa", $pdq::CEN, $pdq::FCFS);  
-        pdq::SetDemand("Fa", "Work", $fAServTime);
-
-        pdq::CreateNode("Fb", $pdq::CEN, $pdq::FCFS);  
-        pdq::SetDemand("Fb", "Work", $fBServTime);
-
-        pdq::Solve($pdq::CANON);
-        pdq::Report();
-
-                    </pre>
-                </div>
-            </div>
-        </div>
-
-        <div class="row  add-row-spacing">
-            <div class="col-lg-4">
-                <div class="bs-component">
-                    <img src="pics/parallel-f.jpg" class="center-type">
-                    <h3>Parallel functions</h3>
-                    <p class="card-text"></p>
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <div class="bs-component">
-                    <pre>
-
-        use pdq;
-
-        $arrivRate = 0.75;
-
-        $servTime1  = 1.0;
-        $pBranch1 = 0.3;
-        
-        $servTime2  = 0.5;
-        $pBranch2 = 1 - $pBranch1;
-
-        pdq::Init("Parallel functions");
-        pdq::CreateOpen("Work", $arrivRate);
-
-        pdq::CreateNode("Branch1", $pdq::CEN, $pdq::FCFS);  
-        pdq::SetDemand("Branch1", "Work", $servTime1 * $pBranch1);
-
-        pdq::CreateNode("Branch2", $pdq::CEN, $pdq::FCFS);  
-        pdq::SetDemand("Branch2", "Work", $pBranch2 * $pBranch2);
-
-        pdq::Solve($pdq::CANON);
-        pdq::Report();
-
-                    </pre>
-                </div>
-            </div>
-        </div>
-
-        <div class="row  add-row-spacing">
-            <div class="col-lg-4">
-                <div class="bs-component">
-                    <img src="pics/repetition-f.jpg" class="center-type">
-                    <h3>Repetition function</h3>
-                    <p class="card-text"></p>
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <div class="bs-component">
-                    <pre>
-
-        use pdq;
-
-        $arrivRate = 0.75;
-        $servTime  = 1.0;
-        
-        $returnsProb = 0.1;
-        $meanVisits = 1.0 / (1 - $returnsProb);
-
-        pdq::Init("Repetition function");
-        pdq::CreateOpen("Work", $arrivRate);
-
-        pdq::CreateNode("Server", $pdq::CEN, $pdq::FCFS);  
-        pdq::SetVisits("Server", "Work", $meanVisits, $servTime);
-
-        pdq::Solve($pdq::CANON);
-        pdq::Report();
-
-                    </pre>
-                </div>
-            </div>
-        </div>
-
-
-    </div>
-
-
 
     <!-- 
     ================================================== -->
@@ -372,7 +170,7 @@
                 <div class="bs-component">
                     <blockquote class="blockquote text-center">
                         <p class="mb-0">Blown away by PDQ. You get instant feedback for topology and optimization changes.</p>
-                        <footer class="blockquote-footer"><cite title="Source Title">Ruslan Rusu</cite></footer>
+                        <footer class="blockquote-footer"><cite title="Source Title">unknown</cite></footer>
                     </blockquote>
                 </div>
             </div>
@@ -419,6 +217,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/perl/perl.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.5.11/split.min.js"></script>
 
 
     <script type="text/javascript">
@@ -460,6 +259,22 @@
               resultsEditor.getDoc().setValue(data)
           });
 
+        });
+
+        Split(['#one', '#two'], {
+            sizes: [50, 50],
+            direction: 'horizontal',
+        });
+
+
+        $('#fs-button').on('click', function(){
+            var elem = document.getElementById('flex');
+            if(document.webkitFullscreenElement) {
+              document.webkitCancelFullScreen();
+            }
+            else {
+              elem.webkitRequestFullScreen();
+            };
         });
 
       });
