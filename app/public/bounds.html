@@ -56,28 +56,23 @@ var svg = d3.select("#my_dataviz")
               "translate(" + margin.left + "," + margin.top + ")");
 
 //Read the data
-//d3.json("/chart", function(data) {
+d3.json("/chart", function(data) {
 
 
-  // response_time = data.response_time.workloads[0].data
-
-  // response_time.forEach(function(d) {
-  //     d.value = +d.value;
-  //     d.u = +d.u;
-  // });
-
-  // console.log(response_time)
 
 
-response_time = [
-  {u: 0, value: 2.0000},
-  {u: 0.5, value: 11.4679},
-]
+   console.log(data)
 
-// Scale the range of the data
-    // Set the ranges
+
+
+// response_time = [
+//   {u: 0, value: 2.0000},
+//   {u: 0.5, value: 11.4679}
+// ]
+
+  // Add Y axis
   var x = d3.scaleLinear()
-    .domain(d3.extent(response_time, function(d) { return d.u; }))
+    .domain(d3.extent(data.response_time.value_range.x, function(d) { return +d; }))
     .range([ 0, width ]);
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -87,22 +82,34 @@ response_time = [
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain([0, d3.max(response_time, function(d) { return +d.value; })])
+    .domain([0, d3.max(data.response_time.value_range.y, function(d) { return +d; })])
     .range([ height, 0 ]);
   svg.append("g")
     .call(d3.axisLeft(y).ticks(5));
 
-  svg
-  .data(response_time)
-  .append("path")
-  .attr("class", "line")
-  .attr("d", function(d){
-    return d3.line()
-      .x(function(d) { return x(d.u); })
-      .y(function(d) { return y(+d.value); })
-      .curve(d3.curveMonotoneX)
-      (response_time)
-  })
+ 
+  var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+  data.response_time.workloads.forEach(function(response_time) {
+
+    response_time.data.forEach(function(d) {
+        d.value = +d.value;
+        d.u = +d.u;
+    });
+
+     svg
+      .append("path")
+      .attr("class", "line")
+      .style("stroke", color(response_time.name))
+      .attr("d", function(d){
+        return d3.line()
+          .x(function(d) { return x(d.u); })
+          .y(function(d) { return y(+d.value); })
+          .curve(d3.curveMonotoneX)
+          (response_time.data)
+      })
+
+  });
 
 
 	svg.append("text")
@@ -111,7 +118,7 @@ response_time = [
         .attr("text-anchor", "middle")	
         .style("font-size", "16px") 
         .text("response time");        
-//})
+})
 
 </script>
 
