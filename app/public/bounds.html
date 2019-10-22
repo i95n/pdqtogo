@@ -1,0 +1,118 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Bounds</title>
+
+<style> /* set the CSS */
+
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+</style>  
+
+</head>
+
+<body>
+	<div id="my_dataviz"></div>
+</body>
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<script>
+
+// Set the dimensions of the canvas / graph
+var margin = {top: 30, right: 20, bottom: 30, left: 50},
+    width = 300 - margin.left - margin.right,
+    height = 270 - margin.top - margin.bottom;
+
+
+
+// Define the line
+var valueline = d3.line()
+    .x(function(d) { return x(d.u); })
+    .y(function(d) { return y(d.value); });
+    
+// Adds the svg canvas
+var svg = d3.select("#my_dataviz")
+    .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform", 
+              "translate(" + margin.left + "," + margin.top + ")");
+
+//Read the data
+//d3.json("/chart", function(data) {
+
+
+  // response_time = data.response_time.workloads[0].data
+
+  // response_time.forEach(function(d) {
+  //     d.value = +d.value;
+  //     d.u = +d.u;
+  // });
+
+  // console.log(response_time)
+
+
+response_time = [
+  {u: 0, value: 2.0000},
+  {u: 0.5, value: 11.4679},
+]
+
+// Scale the range of the data
+    // Set the ranges
+  var x = d3.scaleLinear()
+    .domain(d3.extent(response_time, function(d) { return d.u; }))
+    .range([ 0, width ]);
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x).ticks(5));
+
+
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, d3.max(response_time, function(d) { return +d.value; })])
+    .range([ height, 0 ]);
+  svg.append("g")
+    .call(d3.axisLeft(y).ticks(5));
+
+  svg
+  .data(response_time)
+  .append("path")
+  .attr("class", "line")
+  .attr("d", function(d){
+    return d3.line()
+      .x(function(d) { return x(d.u); })
+      .y(function(d) { return y(+d.value); })
+      .curve(d3.curveMonotoneX)
+      (response_time)
+  })
+
+
+	svg.append("text")
+        .attr("x", (width / 2))				
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")	
+        .style("font-size", "16px") 
+        .text("response time");        
+//})
+
+</script>
+
+</html>
