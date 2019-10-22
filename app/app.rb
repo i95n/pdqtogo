@@ -24,44 +24,28 @@ end
 
 get '/chart' do
 	content_type :json
-	{:throughput=>
-	  {:workloads=>
-	    [{:name=>"Idfs",
-	      :data=>
-	       [{:u=>0, :value=>0},
-	        {:u=>0.5, :value=>"0.2400"},
-	        {:u=>1, :value=>"0.5000"}]},
-	     {:name=>"Qcs",
-	      :data=>
-	       [{:u=>0, :value=>0},
-	        {:u=>0.5, :value=>"0.0640"},
-	        {:u=>1, :value=>"0.5000"}]},
-	     {:name=>"Enr",
-	      :data=>
-	       [{:u=>0, :value=>0},
-	        {:u=>0.5, :value=>"0.0960"},
-	        {:u=>1, :value=>"0.3125"}]}]},
-	 :response_time=>
-	  { :value_range => {
-	  	:x => [0, 1.0],
-	  	:y => [0, 18]
-	  }, 
-	  	:workloads=>
-	    [{:name=>"Idfs",
-	      :data=>
-	       [{:u=>0, :value=>"2.0000"},
-	        {:u=>0.5, :value=>"11.4679"},
-	        {:u=>1, :value=>"50"}]},
-	     {:name=>"Qcs",
-	      :data=>
-	       [{:u=>0, :value=>"0.6000"},
-	        {:u=>0.5, :value=>"3.4404"},
-	        {:u=>1, :value=>"50"}]},
-	     {:name=>"Enr",
-	      :data=>
-	       [{:u=>0, :value=>"3.2000"},
-	        {:u=>0.5, :value=>"18.3486"},
-	        {:u=>1, :value=>"50"}]}]}}.to_json
+
+	{
+		:response_time => [
+			{
+				:categorie => "Min response",
+				:values => [
+					{:rate => "Idfs", :value => 2.0000},
+					{:rate => "Qcs", :value => 0.6000},
+					{:rate => "Enr", :value => 3.2000},
+				]
+			},
+			{
+				:categorie => "Response time",
+				:values => [
+					{:rate => "Idfs", :value => 11.4679},
+					{:rate => "Qcs", :value => 3.4404},
+					{:rate => "Enr", :value => 18.3486},
+				]
+			}
+		]
+	}.to_json
+
 end	
 
 post '/solve' do
