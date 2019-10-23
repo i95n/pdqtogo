@@ -26,6 +26,7 @@ get '/chart' do
 	content_type :json
 
 	{
+		:response_time_unit => "Sec",
 		:response_time => [
 			{
 				:categorie => "Min response",
@@ -45,6 +46,40 @@ get '/chart' do
 			}
 		]
 	}.to_json
+
+	# {
+	# 	:response_time_unit => "Sec",
+	# 	:response_time => [
+	# 		{
+	# 			:categorie => "Min response",
+	# 			:values => [
+	# 				{:rate => "Idfs", :value => 2.0000},
+	# 			]
+	# 		},
+	# 		{
+	# 			:categorie => "Response time",
+	# 			:values => [
+	# 				{:rate => "Idfs", :value => 11.4679},
+	# 			]
+	# 		}
+	# 	],
+	# 	:throughput_unit => "Op/Sec",
+	# 	:throughput => [
+	# 		{
+	# 			:categorie => "Mean throughput",
+	# 			:values => [
+	# 				{:rate => "Idfs", :value => 0.2400},
+	# 			]
+	# 		},
+	# 		{
+	# 			:categorie => "Max throughput",
+	# 			:values => [
+	# 				{:rate => "Idfs", :value => 0.5000},
+	# 			]
+	# 		}
+	# 	]
+
+	# }.to_json
 
 end	
 
