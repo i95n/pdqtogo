@@ -44,42 +44,30 @@ get '/chart' do
 					{:rate => "Enr", :value => 18.3486},
 				]
 			}
+		],
+		:throughput_unit => "Op/Sec",
+		:throughput => [
+			{
+				:categorie => "Mean throughput",
+				:values => [
+					{:rate => "Idfs", :value => 0.2400},
+					{:rate => "Qcs", :value => 0.0640},
+					{:rate => "Enr", :value => 0.0960},
+				]
+			},
+			{
+				:categorie => "Max throughput",
+				:values => [
+					{:rate => "Idfs", :value => 0.5000},
+					{:rate => "Qcs", :value => 0.5000},
+					{:rate => "Enr", :value => 0.3125},
+				]
+			}
 		]
+
 	}.to_json
 
-	# {
-	# 	:response_time_unit => "Sec",
-	# 	:response_time => [
-	# 		{
-	# 			:categorie => "Min response",
-	# 			:values => [
-	# 				{:rate => "Idfs", :value => 2.0000},
-	# 			]
-	# 		},
-	# 		{
-	# 			:categorie => "Response time",
-	# 			:values => [
-	# 				{:rate => "Idfs", :value => 11.4679},
-	# 			]
-	# 		}
-	# 	],
-	# 	:throughput_unit => "Op/Sec",
-	# 	:throughput => [
-	# 		{
-	# 			:categorie => "Mean throughput",
-	# 			:values => [
-	# 				{:rate => "Idfs", :value => 0.2400},
-	# 			]
-	# 		},
-	# 		{
-	# 			:categorie => "Max throughput",
-	# 			:values => [
-	# 				{:rate => "Idfs", :value => 0.5000},
-	# 			]
-	# 		}
-	# 	]
-
-	# }.to_json
+	
 
 end	
 
@@ -87,8 +75,54 @@ post '/solve' do
   	content_type :text
 
   	model = params[:model] 
+  	eval_model(model)
+end
 
-  	result = ""
+post '/chart2' do
+  	content_type :json
+
+  	model = params[:model] 
+  	eval_model(model)
+
+  	{
+		:response_time_unit => "Sec",
+		:response_time => [
+			{
+				:categorie => "Min response",
+				:values => [
+					{:rate => "Idfs", :value => 2.0000},
+				]
+			},
+			{
+				:categorie => "Response time",
+				:values => [
+					{:rate => "Idfs", :value => 11.4679},
+				]
+			}
+		],
+		:throughput_unit => "Op/Sec",
+		:throughput => [
+			{
+				:categorie => "Mean throughput",
+				:values => [
+					{:rate => "Idfs", :value => 0.2400},
+				]
+			},
+			{
+				:categorie => "Max throughput",
+				:values => [
+					{:rate => "Idfs", :value => 0.5000},
+				]
+			}
+		]
+
+	}.to_json
+
+end
+
+
+def eval_model(model)
+	result = ""
 	error = ""
 
 	pp model
@@ -118,7 +152,6 @@ post '/solve' do
 		pp error
 		return error
 	end
-
 end
 
 def format_output(result)
