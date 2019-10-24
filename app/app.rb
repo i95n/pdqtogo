@@ -4,6 +4,7 @@ require 'open3'
 require 'pp'
 require 'uri'
 require 'json'
+require 'enumerator'
 
 set :protection, except: [ :json_csrf ]
 
@@ -78,48 +79,32 @@ post '/solve' do
   	eval_model(model)
 end
 
-post '/chart2' do
-  	content_type :json
+get '/chart3' do
+  	content_type :text
 
-  	model = params[:model] 
-  	eval_model(model)
+  	model = IO.read("./samples/10mm1.pl")
+  	result = eval_model(model)
 
-  	{
-		:response_time_unit => "Sec",
-		:response_time => [
-			{
-				:categorie => "Min response",
-				:values => [
-					{:rate => "Idfs", :value => 2.0000},
-				]
-			},
-			{
-				:categorie => "Response time",
-				:values => [
-					{:rate => "Idfs", :value => 11.4679},
-				]
-			}
-		],
-		:throughput_unit => "Op/Sec",
-		:throughput => [
-			{
-				:categorie => "Mean throughput",
-				:values => [
-					{:rate => "Idfs", :value => 0.2400},
-				]
-			},
-			{
-				:categorie => "Max throughput",
-				:values => [
-					{:rate => "Idfs", :value => 0.5000},
-				]
-			}
-		]
+  	reportsIdx = substring_positions("PRETTY DAMN QUICK REPORT", result)
+  	reportsIdx << result.size
 
-	}.to_json
+	for i in 0..(reportsIdx.size - 2)
+		reportN = result.slice(reportsIdx[i], reportsIdx[i+1])
+		#puts "#{reportsIdx[i]} #{reportsIdx[i+1]}"
 
+		parse_report(reportN)
+	end
+
+	""
 end
 
+def parse_report(report)
+	
+end
+
+def substring_positions(substring, string)
+	string.enum_for(:scan, substring).map { $~.offset(0)[0] - substring.size }
+end
 
 def eval_model(model)
 	result = ""
@@ -156,6 +141,6 @@ end
 
 def format_output(result)
 	result
-		.gsub(/NULL\R+/, '')
-		.gsub(/\[1\] 0\n/, '')
+		#.gsub(/NULL\R+/, '')
+		#.gsub(/\[1\] 0\n/, '')
 end
