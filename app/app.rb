@@ -88,22 +88,83 @@ get '/chart3' do
   	reportsIdx = substring_positions("PRETTY DAMN QUICK REPORT", result)
   	reportsIdx << result.size
 
-	for i in 0..(reportsIdx.size - 2)
-		reportN = result.slice(reportsIdx[i], reportsIdx[i+1])
-		#puts "#{reportsIdx[i]} #{reportsIdx[i+1]}"
+  	reaults = []
+  	reaults << "utilization,metric,resource,stream,value,unit"
 
-		parse_report(reportN)
+	for i in 0..(reportsIdx.size - 2)
+		reportN = result[reportsIdx[i]..reportsIdx[i+1]]
+		
+		# puts "==========#{reportsIdx[i]} #{reportsIdx[i+1]}"
+		# pp reportN
+
+		reaults = reaults + parse_report(reportN)
 	end
 
-	""
+	reaults.join("\n")
 end
 
 def parse_report(report)
-	
+	content = report.split("\n")
+	printMetrics = false
+
+	data = {}
+	results = []
+
+	content.each_with_index do |item, index|
+
+		if item.include?("RESOURCE Performance")
+			printMetrics = true
+		end
+
+
+		if printMetrics
+			#puts "#{index} #{item}"
+
+			if match = item.match(/(?<metric>[ a-zA-Z]+)[ ]+(?<resource>[a-zA-Z]+)[ ]+(?<stream>[a-zA-Z]+)[ ]+(?<value>[.0-9]+)[ ]+(?<units>[\/a-zA-Z]+)/i)
+			  	metric, resource, stream, value, units = match.captures
+
+			  	#puts "#{metric},#{stream},#{value},#{units}"
+			  	mt = metric.strip
+			  	data[mt] = {
+			  		:metric => mt, 
+			  		:resource => resource, 
+			  		:stream => stream, 
+			  		:value => value, 
+			  		:units => units
+			  	}
+			end
+		end	
+
+		
+	end	
+
+	data.each do |key, item|
+	  results << "#{data["Utilization"][:value]},#{item[:metric]},#{item[:resource]},#{item[:stream]},#{item[:value]},#{item[:units]}"
+	end
+
+	results
 end
 
 def substring_positions(substring, string)
 	string.enum_for(:scan, substring).map { $~.offset(0)[0] - substring.size }
+
+	#idx = string.index(substring)
+	# indices = []
+
+	# idx = 0;
+	# content = string
+
+	# while true
+	# 	idx = content.index(substring)
+	# 	puts idx
+
+	# 	break if idx == nil
+
+	# 	indices << idx
+	# 	content = content[(idx + substring.size + 5)..-1]
+	# end
+
+	# indices
 end
 
 def eval_model(model)
@@ -131,7 +192,7 @@ def eval_model(model)
 
 	if error.nil? || error.empty?
 		result = format_output(result)
-		pp result
+		#pp result
   		return result
 	else
 		pp error
