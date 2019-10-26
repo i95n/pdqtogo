@@ -328,7 +328,7 @@
               resultsEditor.getDoc().setValue(data)
             });
 
-            d3.json("/chart3", function(error, d) {
+            $.post("/chart", {model: code}, function( d ) {
                 renderChart(d.throughput, "#throughput")
                 renderChart(d.in_service, "#in_service")
                 renderChart(d.queue_length, "#queue_length")

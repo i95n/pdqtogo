@@ -33,7 +33,7 @@ function renderChart(data, divId){
 
 	/* Scale */
 	var xScale = d3.scaleLinear()
-	  .domain([0, d3.max(data[0].values, d => d.utilization)])
+	  .domain([0, 100])
 	  .range([0, width-margin]);
 
 	var yScale = d3.scaleLinear()
@@ -43,7 +43,12 @@ function renderChart(data, divId){
 	var color = d3.scaleOrdinal(d3.schemeCategory10);
 
 	/* Add SVG */
-	var svg = d3.select(divId).append("svg")
+
+	d3.selectAll(divId +" > *").remove();
+
+	var svg = d3.select(divId)
+	  //.selectAll("*").remove()
+	  .append("svg")
 	  .attr("width", (width+margin)+"px")
 	  .attr("height", (height+margin)+"px")
 	  .append('g')
@@ -143,7 +148,7 @@ function renderChart(data, divId){
 	  .attr("x",  width - 70)
 	  .attr("y",  -10)
 	  .attr("fill", "#000")
-	  .text("Utilization");
+	  .text("Utilization(%)");
 
 	svg.append("g")
 	  .attr("class", "y axis")

@@ -23,53 +23,31 @@ get '/model' do
 	IO.read("./samples/#{name}")
 end
 
-get '/chart' do
+post '/chart' do
 	content_type :json
 
+  	model = params[:model] 
+  	result = eval_model(model)
+
+  	reportsIdx = substring_positions("PRETTY DAMN QUICK REPORT", result)
+  	reportsIdx << result.size
+
+  	results = []
+
+	for i in 0..(reportsIdx.size - 2)
+		reportN = result[reportsIdx[i]..reportsIdx[i+1]]
+		
+		results = results + parse_report(reportN)
+	end
+
 	{
-		:response_time_unit => "Sec",
-		:response_time => [
-			{
-				:categorie => "Min response",
-				:values => [
-					{:rate => "Idfs", :value => 2.0000},
-					{:rate => "Qcs", :value => 0.6000},
-					{:rate => "Enr", :value => 3.2000},
-				]
-			},
-			{
-				:categorie => "Response time",
-				:values => [
-					{:rate => "Idfs", :value => 11.4679},
-					{:rate => "Qcs", :value => 3.4404},
-					{:rate => "Enr", :value => 18.3486},
-				]
-			}
-		],
-		:throughput_unit => "Op/Sec",
-		:throughput => [
-			{
-				:categorie => "Mean throughput",
-				:values => [
-					{:rate => "Idfs", :value => 0.2400},
-					{:rate => "Qcs", :value => 0.0640},
-					{:rate => "Enr", :value => 0.0960},
-				]
-			},
-			{
-				:categorie => "Max throughput",
-				:values => [
-					{:rate => "Idfs", :value => 0.5000},
-					{:rate => "Qcs", :value => 0.5000},
-					{:rate => "Enr", :value => 0.3125},
-				]
-			}
-		]
-
+		"throughput" => group_by_metric(results,"Throughput"),
+		"in_service" => group_by_metric(results,"In service"),
+		"queue_length" => group_by_metric(results,"Queue length"),
+		"waiting_line" => group_by_metric(results,"Waiting line"),
+		"waiting_time" => group_by_metric(results,"Waiting time"),
+		"residence_time" => group_by_metric(results,"Residence time"),
 	}.to_json
-
-	
-
 end	
 
 post '/solve' do
@@ -82,7 +60,7 @@ end
 get '/chart3' do
   	content_type :json
 
-  	model = IO.read("./samples/10mm1cl3.pl")
+  	model = IO.read("./samples/10mm1.pl")
   	result = eval_model(model)
 
   	reportsIdx = substring_positions("PRETTY DAMN QUICK REPORT", result)
@@ -93,9 +71,6 @@ get '/chart3' do
 	for i in 0..(reportsIdx.size - 2)
 		reportN = result[reportsIdx[i]..reportsIdx[i+1]]
 		
-		# puts "==========#{reportsIdx[i]} #{reportsIdx[i+1]}"
-		# pp reportN
-
 		results = results + parse_report(reportN)
 	end
 
