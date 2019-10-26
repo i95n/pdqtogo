@@ -69,19 +69,27 @@
           overflow:auto;
         }
 
-        .axis path,
-        .axis line {
+        .line {
+          stroke-width: 2;
           fill: none;
-          stroke: #000;
-          shape-rendering: crispEdges;
         }
 
-        .x.axis path {
-          display: none;
+        .axis path {
+          stroke: black;
         }
 
-        .chart {
-            font: 10px sans-serif;
+        .text {
+          font-size: 12px;
+        }
+
+        .title-text {
+          font-size: 12px;
+        }
+
+        .chart{
+            border:1px solid #8080800f;
+            width: 350px;
+            margin: 30px;
         }
 
     </style>
@@ -177,23 +185,26 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-12">
-                <div class="bs-component">
-                      <h4 class="text-center">SYSTEM Performance</h4>
-                </div>
+            <div class="col-lg-4">
+                    <div id="throughput" class="chart"></div>
+            </div>
+            <div class="col-lg-4">
+                    <div id="in_service" class="chart"></div>
+            </div>
+            <div class="col-lg-4">
+                    <div id="queue_length" class="chart"></div>
             </div>
         </div>
-        
+
         <div class="row">
-            <div class="col-lg-6">
-                <div class="bs-component">
-                      <div id="system-rt-perf" class="chart"></div>
-                </div>
+            <div class="col-lg-4">
+                    <div id="waiting_line" class="chart"></div>
             </div>
-            <div class="col-lg-6">
-                <div class="bs-component">
-                    <div id="system-thr-perf" class="chart"></div>
-                </div>
+            <div class="col-lg-4">
+                    <div id="waiting_time" class="chart"></div>
+            </div>
+            <div class="col-lg-4">
+                    <div id="residence_time" class="chart"></div>
             </div>
         </div>
     </div>
@@ -274,8 +285,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.5.11/split.min.js"></script>
 
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="/d3-bars.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="/d3-lines.js"></script>
 
 
     <script type="text/javascript">
@@ -317,9 +328,13 @@
               resultsEditor.getDoc().setValue(data)
             });
 
-            $.post("/chart2", {model: code}, function(d) {
-                drawChart('#system-rt-perf', d.response_time, d.response_time_unit, "response time")
-                drawChart('#system-thr-perf', d.throughput, d.throughput_unit, "throughput")
+            d3.json("/chart3", function(error, d) {
+                renderChart(d.throughput, "#throughput")
+                renderChart(d.in_service, "#in_service")
+                renderChart(d.queue_length, "#queue_length")
+                renderChart(d.waiting_line, "#waiting_line")
+                renderChart(d.waiting_time, "#waiting_time")
+                renderChart(d.residence_time, "#residence_time")
             });
 
         });
