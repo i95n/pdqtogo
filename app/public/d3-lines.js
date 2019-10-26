@@ -15,10 +15,15 @@ function renderChart(data, divId){
 	var circleRadius = 3;
 	var circleRadiusHover = 6;
 
+	var maxY = 0;
+
 	data.forEach(function(d) { 
 	  d.values.forEach(function(d) {
 	    d.utilization = +d.utilization;    
-	    d.value = +d.value;    
+	    d.value = +d.value;
+
+	    if(maxY < d.value)
+	    	maxY = d.value;    
 	  });
 	});
 
@@ -32,7 +37,7 @@ function renderChart(data, divId){
 	  .range([0, width-margin]);
 
 	var yScale = d3.scaleLinear()
-	  .domain([0, d3.max(data[0].values, d => d.value)])
+	  .domain([0, maxY])
 	  .range([height-margin, 0]);
 
 	var color = d3.scaleOrdinal(d3.schemeCategory10);
