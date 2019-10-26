@@ -80,16 +80,15 @@ post '/solve' do
 end
 
 get '/chart3' do
-  	content_type :text
+  	content_type :json
 
-  	model = IO.read("./samples/10mm1.pl")
+  	model = IO.read("./samples/10mm1cl3.pl")
   	result = eval_model(model)
 
   	reportsIdx = substring_positions("PRETTY DAMN QUICK REPORT", result)
   	reportsIdx << result.size
 
-  	reaults = []
-  	reaults << "utilization,metric,resource,stream,value,unit"
+  	results = []
 
 	for i in 0..(reportsIdx.size - 2)
 		reportN = result[reportsIdx[i]..reportsIdx[i+1]]
@@ -97,18 +96,36 @@ get '/chart3' do
 		# puts "==========#{reportsIdx[i]} #{reportsIdx[i+1]}"
 		# pp reportN
 
-		reaults = reaults + parse_report(reportN)
+		results = results + parse_report(reportN)
 	end
 
-	reaults.join("\n")
+	{
+		"throughput" => group_by_metric(results,"Throughput"),
+		"in_service" => group_by_metric(results,"In service"),
+		"queue_length" => group_by_metric(results,"Queue length"),
+		"waiting_line" => group_by_metric(results,"Waiting line"),
+		"waiting_time" => group_by_metric(results,"Waiting time"),
+		"residence_time" => group_by_metric(results,"Residence time"),
+	}.to_json
+end
+
+def group_by_metric(data, metricName)
+	data
+		.select { |hash| hash[:metric] == metricName }
+		.group_by{ |s| s[:stream] }
+		.map {|key, values| {
+			:name => key, 
+			:values => values 
+		} }
 end
 
 def parse_report(report)
 	content = report.split("\n")
 	printMetrics = false
 
-	data = {}
 	results = []
+
+	utilization = {}
 
 	content.each_with_index do |item, index|
 
@@ -124,22 +141,24 @@ def parse_report(report)
 			  	metric, resource, stream, value, units = match.captures
 
 			  	#puts "#{metric},#{stream},#{value},#{units}"
-			  	mt = metric.strip
-			  	data[mt] = {
-			  		:metric => mt, 
+			  	results << {
+			  		:metric => metric.strip, 
 			  		:resource => resource, 
 			  		:stream => stream, 
 			  		:value => value, 
 			  		:units => units
 			  	}
+
+			  	if metric.strip == "Utilization"
+			  		utilization["#{resource}-#{stream}"] = value
+			  	end	
 			end
 		end	
-
 		
 	end	
 
-	data.each do |key, item|
-	  results << "#{data["Utilization"][:value]},#{item[:metric]},#{item[:resource]},#{item[:stream]},#{item[:value]},#{item[:units]}"
+	results.each do |item|
+	  item[:utilization] = utilization["#{item[:resource]}-#{item[:stream]}"]
 	end
 
 	results
@@ -147,24 +166,6 @@ end
 
 def substring_positions(substring, string)
 	string.enum_for(:scan, substring).map { $~.offset(0)[0] - substring.size }
-
-	#idx = string.index(substring)
-	# indices = []
-
-	# idx = 0;
-	# content = string
-
-	# while true
-	# 	idx = content.index(substring)
-	# 	puts idx
-
-	# 	break if idx == nil
-
-	# 	indices << idx
-	# 	content = content[(idx + substring.size + 5)..-1]
-	# end
-
-	# indices
 end
 
 def eval_model(model)

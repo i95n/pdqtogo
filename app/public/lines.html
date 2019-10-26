@@ -1,84 +1,186 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<style type="text/css">
+	svg {
+    font-family: Sans-Serif, Arial;
+}
+.line {
+  stroke-width: 2;
+  fill: none;
+}
 
+.axis path {
+  stroke: black;
+}
+
+.text {
+  font-size: 12px;
+}
+
+.title-text {
+  font-size: 12px;
+}
+</style>
 <!-- Load d3.js -->
-<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
 
 <!-- Create a div where the graph will take place -->
-<div id="my_dataviz"></div>
+<div id="chart"></div>
 
 <script>
 
-// set the dimensions and margins of the graph
-var margin = {top: 30, right: 0, bottom: 30, left: 50},
-    width = 210 - margin.left - margin.right,
-    height = 210 - margin.top - margin.bottom;
+var width = 500;
+var height = 300;
+var margin = 50;
+var duration = 250;
 
-//Read the data
-d3.csv("/chart3", function(data) {
+var lineOpacity = "0.25";
+var lineOpacityHover = "0.85";
+var otherLinesOpacityHover = "0.1";
+var lineStroke = "1.5px";
+var lineStrokeHover = "2.5px";
 
-  // group the data: I want to draw one line per group
-  var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
-    .key(function(d) { return d.metric;})
-    .entries(data);
+var circleOpacity = '0.85';
+var circleOpacityOnLineHover = "0.25"
+var circleRadius = 3;
+var circleRadiusHover = 6;
 
-  // What is the list of groups?
-  allKeys = sumstat.map(function(d){return d.key})
 
-  // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
-  var svg = d3.select("#my_dataviz")
-    .selectAll("uniqueChart")
-    .data(sumstat)
-    .enter()
-    .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+d3.json("/chart3", function(error, d) {
 
-  // Add X axis --> it is a date format
-  var x = d3.scaleLinear()
-    .domain(d3.extent(data, function(d) { return d.utilization; }))
-    .range([ 0, width ]);
-  svg
-    .append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x).ticks(3));
+	    /* Format Data */
+	
 
-  //Add Y axis
-  var y = d3.scaleLinear()
-    .domain([0, d3.max(data, function(d) { return +d.value; })])
-    .range([ height, 0 ]);
-  svg.append("g")
-    .call(d3.axisLeft(y).ticks(5));
+	data = d.queue_length;
 
-  // color palette
-  var color = d3.scaleOrdinal()
-    .domain(allKeys)
-    .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
+	data.forEach(function(d) { 
+	  d.values.forEach(function(d) {
+	    d.utilization = +d.utilization;    
+	    d.value = +d.value;    
+	  });
+	});
 
-  // Draw the line
-  svg
-    .append("path")
-      .attr("fill", "none")
-      .attr("stroke", function(d){ return color(d.key) })
-      .attr("stroke-width", 1.9)
-      .attr("d", function(d){
-        return d3.line()
-          .x(function(d) { return x(d.utilization); })
-          .y(function(d) { return y(+d.value); })
-          (d.values)
-      })
+	/* Scale */
+	var xScale = d3.scaleLinear()
+	  .domain([0, d3.max(data[0].values, d => d.utilization)])
+	  .range([0, width-margin]);
 
-  // Add titles
-  svg
-    .append("text")
-    .attr("text-anchor", "start")
-    .attr("y", -5)
-    .attr("x", 0)
-    .text(function(d){ return(d.key)})
-    .style("fill", function(d){ return color(d.key) })
+	var yScale = d3.scaleLinear()
+	  .domain([0, d3.max(data[0].values, d => d.value)])
+	  .range([height-margin, 0]);
 
-})
+	var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+	/* Add SVG */
+	var svg = d3.select("#chart").append("svg")
+	  .attr("width", (width+margin)+"px")
+	  .attr("height", (height+margin)+"px")
+	  .append('g')
+	  .attr("transform", `translate(${margin}, ${margin})`);
+
+
+	/* Add line into SVG */
+	var line = d3.line()
+	  .x(d => xScale(d.utilization))
+	  .y(d => yScale(d.value));
+
+	var lines = svg.append('g')
+	  .attr('class', 'lines');
+
+	lines.selectAll('.line-group')
+	  .data(data).enter()
+	  .append('g')
+	  .attr('class', 'line-group')  
+	  .append('path')
+	  .attr('class', 'line')  
+	  .attr('d', d => line(d.values))
+	  .style('stroke', (d, i) => color(i))
+	  .style('opacity', lineOpacity)
+	  .on("mouseover", function(d) {
+	      d3.selectAll('.line')
+						.style('opacity', otherLinesOpacityHover);
+	      d3.selectAll('.circle')
+						.style('opacity', circleOpacityOnLineHover);
+	      d3.select(this)
+	        .style('opacity', lineOpacityHover)
+	        .style("stroke-width", lineStrokeHover)
+	        .style("cursor", "pointer");
+	    })
+	  .on("mouseout", function(d) {
+	      d3.selectAll(".line")
+						.style('opacity', lineOpacity);
+	      d3.selectAll('.circle')
+						.style('opacity', circleOpacity);
+	      d3.select(this)
+	        .style("stroke-width", lineStroke)
+	        .style("cursor", "none");
+	    });
+
+
+	/* Add circles in the line */
+	lines.selectAll("circle-group")
+	  .data(data).enter()
+	  .append("g")
+	  .style("fill", (d, i) => color(i))
+	  .selectAll("circle")
+	  .data(d => d.values).enter()
+	  .append("g")
+	  .attr("class", "circle")  
+	  .on("mouseover", function(d) {
+	      d3.select(this)     
+	        .style("cursor", "pointer")
+	        .append("text")
+	        .attr("class", "text")
+	        .text(`${d.value}`)
+	        .attr("x", d => xScale(d.utilization) + 5)
+	        .attr("y", d => yScale(d.value) - 10);
+	    })
+	  .on("mouseout", function(d) {
+	      d3.select(this)
+	        .style("cursor", "none")  
+	        .transition()
+	        .duration(duration)
+	        .selectAll(".text").remove();
+	    })
+	  .append("circle")
+	  .attr("cx", d => xScale(d.utilization))
+	  .attr("cy", d => yScale(d.value))
+	  .attr("r", circleRadius)
+	  .style('opacity', circleOpacity)
+	  .on("mouseover", function(d) {
+	        d3.select(this)
+	          .transition()
+	          .duration(duration)
+	          .attr("r", circleRadiusHover);
+	      })
+	    .on("mouseout", function(d) {
+	        d3.select(this) 
+	          .transition()
+	          .duration(duration)
+	          .attr("r", circleRadius);  
+	      });
+
+
+	/* Add Axis into SVG */
+	var xAxis = d3.axisBottom(xScale).ticks(5);
+	var yAxis = d3.axisLeft(yScale).ticks(5);
+
+	svg.append("g")
+	  .attr("class", "x axis")
+	  .attr("transform", `translate(0, ${height-margin})`)
+	  .call(xAxis);
+
+	svg.append("g")
+	  .attr("class", "y axis")
+	  .call(yAxis)
+	  .append('text')
+	  .attr("y", 15)
+	  .attr("transform", "rotate(-90)")
+	  .attr("fill", "#000")
+	  .text("Total values");
+
+});
+
+
+
 </script>
