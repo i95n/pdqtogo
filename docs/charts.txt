@@ -1,0 +1,13 @@
+https://bl.ocks.org/bricedev/raw/0d95074b6d83a77dc3ad/
+https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89
+https://www.d3-graph-gallery.com/graph/line_smallmultiple.html
+
+https://leanpub.com/D3-Tips-and-Tricks/read#leanpub-auto-exploring-event-data-by-combination-scatter-plot-and-interactive-line-graphs
+
+
+Multiline
+https://codepen.io/zakariachowdhury/pen/JEmjwq
+
+
+Cross hair
+http://plnkr.co/edit/uDXlLoMTrNRavyQdEZME?p=preview

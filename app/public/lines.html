@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style type="text/css">
+	svg {
+    font-family: Sans-Serif, Arial;
+}
+.line {
+  stroke-width: 2;
+  fill: none;
+}
+
+.axis path {
+  stroke: black;
+}
+
+.text {
+  font-size: 12px;
+}
+
+.title-text {
+  font-size: 12px;
+}
+
+.chart{
+	border:1px solid #8080800f;
+	width: 350px;
+}
+</style>
+
+<body>
+	<!-- Create a div where the graph will take place -->
+	<div id="throughput" class="chart"></div>
+	<div id="in_service" class="chart"></div>
+	<div id="queue_length" class="chart"></div>
+	<div id="waiting_line" class="chart"></div>
+	<div id="waiting_time" class="chart"></div>
+	<div id="residence_time" class="chart"></div>
+	
+</body>
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="/d3-lines.js"></script>
+
+<script type="text/javascript">
+    d3.json("/chart3", function( d ) {
+        renderChart(d.throughput, "#throughput")
+        renderChart(d.in_service, "#in_service")
+        renderChart(d.queue_length, "#queue_length")
+        renderChart(d.waiting_line, "#waiting_line")
+        renderChart(d.waiting_time, "#waiting_time")
+        renderChart(d.residence_time, "#residence_time")
+    });
+</script>
