@@ -26,188 +26,29 @@
 	width: 350px;
 }
 </style>
+
+<body>
+	<!-- Create a div where the graph will take place -->
+	<div id="throughput" class="chart"></div>
+	<div id="in_service" class="chart"></div>
+	<div id="queue_length" class="chart"></div>
+	<div id="waiting_line" class="chart"></div>
+	<div id="waiting_time" class="chart"></div>
+	<div id="residence_time" class="chart"></div>
+	
+</body>
+
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="/d3-lines.js"></script>
 
-<!-- Create a div where the graph will take place -->
-<div id="throughput" class="chart"></div>
-<div id="in_service" class="chart"></div>
-<div id="queue_length" class="chart"></div>
-<div id="waiting_line" class="chart"></div>
-<div id="waiting_time" class="chart"></div>
-<div id="residence_time" class="chart"></div>
-
-<script>
-
-
-
-d3.json("/chart3", function(error, d) {
-	renderChart(d.throughput, "#throughput")
-	renderChart(d.in_service, "#in_service")
-	renderChart(d.queue_length, "#queue_length")
-	renderChart(d.waiting_line, "#waiting_line")
-	renderChart(d.waiting_time, "#waiting_time")
-	renderChart(d.residence_time, "#residence_time")
-});
-
-function renderChart(data, divId){
-	var width = 300;
-	var height = 200;
-	var margin = 50;
-	var duration = 250;
-
-	var lineOpacity = "0.25";
-	var lineOpacityHover = "0.85";
-	var otherLinesOpacityHover = "0.1";
-	var lineStroke = "1.5px";
-	var lineStrokeHover = "2.5px";
-
-	var circleOpacity = '0.85';
-	var circleOpacityOnLineHover = "0.25"
-	var circleRadius = 3;
-	var circleRadiusHover = 6;
-
-	data.forEach(function(d) { 
-	  d.values.forEach(function(d) {
-	    d.utilization = +d.utilization;    
-	    d.value = +d.value;    
-	  });
-	});
-
-
-	var title = data[0].values[0].metric;
-	var units = data[0].values[0].units;
-
-	/* Scale */
-	var xScale = d3.scaleLinear()
-	  .domain([0, d3.max(data[0].values, d => d.utilization)])
-	  .range([0, width-margin]);
-
-	var yScale = d3.scaleLinear()
-	  .domain([0, d3.max(data[0].values, d => d.value)])
-	  .range([height-margin, 0]);
-
-	var color = d3.scaleOrdinal(d3.schemeCategory10);
-
-	/* Add SVG */
-	var svg = d3.select(divId).append("svg")
-	  .attr("width", (width+margin)+"px")
-	  .attr("height", (height+margin)+"px")
-	  .append('g')
-	  .attr("transform", `translate(${margin}, ${margin})`);
-
-	/* Add line into SVG */
-	var line = d3.line()
-	  .x(d => xScale(d.utilization))
-	  .y(d => yScale(d.value));
-
-	var lines = svg.append('g')
-	  .attr('class', 'lines');
-
-	lines.selectAll('.line-group')
-	  .data(data).enter()
-	  .append('g')
-	  .attr('class', 'line-group')  
-	  .append('path')
-	  .attr('class', 'line')  
-	  .attr('d', d => line(d.values))
-	  .style('stroke', (d, i) => color(i))
-	  .style('opacity', lineOpacity)
-	  .on("mouseover", function(d) {
-	      d3.selectAll('.line')
-						.style('opacity', otherLinesOpacityHover);
-	      d3.selectAll('.circle')
-						.style('opacity', circleOpacityOnLineHover);
-	      d3.select(this)
-	        .style('opacity', lineOpacityHover)
-	        .style("stroke-width", lineStrokeHover)
-	        .style("cursor", "pointer");
-	    })
-	  .on("mouseout", function(d) {
-	      d3.selectAll(".line")
-						.style('opacity', lineOpacity);
-	      d3.selectAll('.circle')
-						.style('opacity', circleOpacity);
-	      d3.select(this)
-	        .style("stroke-width", lineStroke)
-	        .style("cursor", "none");
-	    });
-
-
-	/* Add circles in the line */
-	lines.selectAll("circle-group")
-	  .data(data).enter()
-	  .append("g")
-	  .style("fill", (d, i) => color(i))
-	  .selectAll("circle")
-	  .data(d => d.values).enter()
-	  .append("g")
-	  .attr("class", "circle")  
-	  .on("mouseover", function(d) {
-	      d3.select(this)     
-	        .style("cursor", "pointer")
-	        .append("text")
-	        .attr("class", "text")
-	        .text(`${d.value}`)
-	        .attr("x", d => xScale(d.utilization) + 5)
-	        .attr("y", d => yScale(d.value) - 10);
-	    })
-	  .on("mouseout", function(d) {
-	      d3.select(this)
-	        .style("cursor", "none")  
-	        .transition()
-	        .duration(duration)
-	        .selectAll(".text").remove();
-	    })
-	  .append("circle")
-	  .attr("cx", d => xScale(d.utilization))
-	  .attr("cy", d => yScale(d.value))
-	  .attr("r", circleRadius)
-	  .style('opacity', circleOpacity)
-	  .on("mouseover", function(d) {
-	        d3.select(this)
-	          .transition()
-	          .duration(duration)
-	          .attr("r", circleRadiusHover);
-	      })
-	    .on("mouseout", function(d) {
-	        d3.select(this) 
-	          .transition()
-	          .duration(duration)
-	          .attr("r", circleRadius);  
-	      });
-
-
-	/* Add Axis into SVG */
-	var xAxis = d3.axisBottom(xScale).ticks(5);
-	var yAxis = d3.axisLeft(yScale).ticks(5);
-
-	svg.append("g")
-	  .attr("class", "x axis")
-	  .attr("transform", `translate(0, ${height-margin})`)
-	  .call(xAxis)
-	  .append('text')
-	  .attr("x",  width - 70)
-	  .attr("y",  -10)
-	  .attr("fill", "#000")
-	  .text("Utilization");
-
-	svg.append("g")
-	  .attr("class", "y axis")
-	  .call(yAxis)
-	  .append('text')
-	  .attr("y", 15)
-	  .attr("transform", "rotate(-90)")
-	  .attr("fill", "#000")
-	  .text(units);
-
-	svg.append("text")
-		.attr("x", ((width - margin) / 2))             
-		.attr("y", 0 - (margin / 2))
-		.attr("text-anchor", "middle") 
-		.style("font-size", "16px") 
-		.text(title);
-}
-
-
+<script type="text/javascript">
+    d3.json("/chart3", function( d ) {
+        renderChart(d.throughput, "#throughput")
+        renderChart(d.in_service, "#in_service")
+        renderChart(d.queue_length, "#queue_length")
+        renderChart(d.waiting_line, "#waiting_line")
+        renderChart(d.waiting_time, "#waiting_time")
+        renderChart(d.residence_time, "#residence_time")
+    });
 </script>

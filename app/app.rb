@@ -61,15 +61,21 @@ get '/chart3' do
   	content_type :json
 
   	model = IO.read("./samples/10mm1.pl")
-  	result = eval_model(model)
 
-  	reportsIdx = substring_positions("PRETTY DAMN QUICK REPORT", result)
-  	reportsIdx << result.size
+  	report = eval_model(model)
+  	result = report_to_charts_data(report)
+  	
+	result.to_json
+end
+
+def report_to_charts_data(report)
+	reportsIdx = substring_positions("PRETTY DAMN QUICK REPORT", report)
+  	reportsIdx << report.size
 
   	results = []
 
 	for i in 0..(reportsIdx.size - 2)
-		reportN = result[reportsIdx[i]..reportsIdx[i+1]]
+		reportN = report[reportsIdx[i]..reportsIdx[i+1]]
 		
 		results = results + parse_report(reportN)
 	end
@@ -81,7 +87,7 @@ get '/chart3' do
 		"waiting_line" => group_by_metric(results,"Waiting line"),
 		"waiting_time" => group_by_metric(results,"Waiting time"),
 		"residence_time" => group_by_metric(results,"Residence time"),
-	}.to_json
+	}
 end
 
 def group_by_metric(data, metricName)
