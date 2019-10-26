@@ -27,27 +27,11 @@ post '/chart' do
 	content_type :json
 
   	model = params[:model] 
-  	result = eval_model(model)
-
-  	reportsIdx = substring_positions("PRETTY DAMN QUICK REPORT", result)
-  	reportsIdx << result.size
-
-  	results = []
-
-	for i in 0..(reportsIdx.size - 2)
-		reportN = result[reportsIdx[i]..reportsIdx[i+1]]
-		
-		results = results + parse_report(reportN)
-	end
-
-	{
-		"throughput" => group_by_metric(results,"Throughput"),
-		"in_service" => group_by_metric(results,"In service"),
-		"queue_length" => group_by_metric(results,"Queue length"),
-		"waiting_line" => group_by_metric(results,"Waiting line"),
-		"waiting_time" => group_by_metric(results,"Waiting time"),
-		"residence_time" => group_by_metric(results,"Residence time"),
-	}.to_json
+  	
+  	report = eval_model(model)
+  	result = report_to_charts_data(report)
+  	
+	result.to_json
 end	
 
 post '/solve' do
@@ -184,6 +168,6 @@ end
 
 def format_output(result)
 	result
-		#.gsub(/NULL\R+/, '')
-		#.gsub(/\[1\] 0\n/, '')
+		.gsub(/NULL\R+/, '')
+		.gsub(/\[1\] 0\n/, '')
 end
