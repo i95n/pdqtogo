@@ -20,38 +20,52 @@
 .title-text {
   font-size: 12px;
 }
+
+.chart{
+	border:1px solid #8080800f;
+	width: 350px;
+}
 </style>
 <!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.min.js"></script>
 
 <!-- Create a div where the graph will take place -->
-<div id="chart"></div>
+<div id="throughput" class="chart"></div>
+<div id="in_service" class="chart"></div>
+<div id="queue_length" class="chart"></div>
+<div id="waiting_line" class="chart"></div>
+<div id="waiting_time" class="chart"></div>
+<div id="residence_time" class="chart"></div>
 
 <script>
 
-var width = 500;
-var height = 300;
-var margin = 50;
-var duration = 250;
-
-var lineOpacity = "0.25";
-var lineOpacityHover = "0.85";
-var otherLinesOpacityHover = "0.1";
-var lineStroke = "1.5px";
-var lineStrokeHover = "2.5px";
-
-var circleOpacity = '0.85';
-var circleOpacityOnLineHover = "0.25"
-var circleRadius = 3;
-var circleRadiusHover = 6;
 
 
 d3.json("/chart3", function(error, d) {
+	renderChart(d.throughput, "#throughput")
+	renderChart(d.in_service, "#in_service")
+	renderChart(d.queue_length, "#queue_length")
+	renderChart(d.waiting_line, "#waiting_line")
+	renderChart(d.waiting_time, "#waiting_time")
+	renderChart(d.residence_time, "#residence_time")
+});
 
-	    /* Format Data */
-	
+function renderChart(data, divId){
+	var width = 300;
+	var height = 200;
+	var margin = 50;
+	var duration = 250;
 
-	data = d.queue_length;
+	var lineOpacity = "0.25";
+	var lineOpacityHover = "0.85";
+	var otherLinesOpacityHover = "0.1";
+	var lineStroke = "1.5px";
+	var lineStrokeHover = "2.5px";
+
+	var circleOpacity = '0.85';
+	var circleOpacityOnLineHover = "0.25"
+	var circleRadius = 3;
+	var circleRadiusHover = 6;
 
 	data.forEach(function(d) { 
 	  d.values.forEach(function(d) {
@@ -59,6 +73,10 @@ d3.json("/chart3", function(error, d) {
 	    d.value = +d.value;    
 	  });
 	});
+
+
+	var title = data[0].values[0].metric;
+	var units = data[0].values[0].units;
 
 	/* Scale */
 	var xScale = d3.scaleLinear()
@@ -72,12 +90,11 @@ d3.json("/chart3", function(error, d) {
 	var color = d3.scaleOrdinal(d3.schemeCategory10);
 
 	/* Add SVG */
-	var svg = d3.select("#chart").append("svg")
+	var svg = d3.select(divId).append("svg")
 	  .attr("width", (width+margin)+"px")
 	  .attr("height", (height+margin)+"px")
 	  .append('g')
 	  .attr("transform", `translate(${margin}, ${margin})`);
-
 
 	/* Add line into SVG */
 	var line = d3.line()
@@ -168,7 +185,12 @@ d3.json("/chart3", function(error, d) {
 	svg.append("g")
 	  .attr("class", "x axis")
 	  .attr("transform", `translate(0, ${height-margin})`)
-	  .call(xAxis);
+	  .call(xAxis)
+	  .append('text')
+	  .attr("x",  width - 70)
+	  .attr("y",  -10)
+	  .attr("fill", "#000")
+	  .text("Utilization");
 
 	svg.append("g")
 	  .attr("class", "y axis")
@@ -177,10 +199,15 @@ d3.json("/chart3", function(error, d) {
 	  .attr("y", 15)
 	  .attr("transform", "rotate(-90)")
 	  .attr("fill", "#000")
-	  .text("Total values");
+	  .text(units);
 
-});
-
+	svg.append("text")
+		.attr("x", ((width - margin) / 2))             
+		.attr("y", 0 - (margin / 2))
+		.attr("text-anchor", "middle") 
+		.style("font-size", "16px") 
+		.text(title);
+}
 
 
 </script>
