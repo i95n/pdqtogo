@@ -30,9 +30,10 @@ function renderChart(data, divId){
 	data.forEach(function(d) { 
 	  d.bounds.forEach(function(d) {
 	    d.value = +d.value;
-	  });
 
-	  console.log(d.bounds);
+		if(maxY < d.value)
+			maxY = d.value; 
+	  });
 	});
 
 
@@ -100,66 +101,62 @@ function renderChart(data, divId){
 	    });
 
 	/* Add circles in the line */
-	lines.selectAll("circle-group")
+	lines
+	  .selectAll("circle-group")
 	  .data(data).enter()
-	  .append("g")
-	  .style("fill", (d, i) => color(i))
+		  .append("g")
+		  	.style("fill", (d, i) => color(i))
 	  .selectAll("circle")
 	  .data(d => d.data).enter()
-	  .append("g")
-	  .attr("class", "circle")  
-	  .on("mouseover", function(d) {
-	      d3.select(this)     
-	        .style("cursor", "pointer")
-	        .append("text")
-	        .attr("class", "text")
-	        .text(`${d.value}`)
-	        .attr("x", d => xScale(d.utilization) + 5)
-	        .attr("y", d => yScale(d.value) - 10);
-	    })
-	  .on("mouseout", function(d) {
-	      d3.select(this)
-	        .style("cursor", "none")  
-	        .transition()
-	        .duration(duration)
-	        .selectAll(".text").remove();
-	    })
-	  .append("circle")
-	  .attr("cx", d => xScale(d.utilization))
-	  .attr("cy", d => yScale(d.value))
-	  .attr("r", circleRadius)
-	  .style('opacity', circleOpacity)
-	  .on("mouseover", function(d) {
-	        d3.select(this)
-	          .transition()
-	          .duration(duration)
-	          .attr("r", circleRadiusHover);
-	      })
-	    .on("mouseout", function(d) {
-	        d3.select(this) 
-	          .transition()
-	          .duration(duration)
-	          .attr("r", circleRadius);  
-	      });
+		  .append("g")
+			  .attr("class", "circle")  
+			  .on("mouseover", function(d) {
+			      d3.select(this)     
+			        .style("cursor", "pointer")
+			        .append("text")
+			        .attr("class", "text")
+			        .text(`${d.value}`)
+			        .attr("x", d => xScale(d.utilization) + 5)
+			        .attr("y", d => yScale(d.value) - 10);
+			    })
+			  .on("mouseout", function(d) {
+			      d3.select(this)
+			        .style("cursor", "none")  
+			        .transition()
+			        .duration(duration)
+			        .selectAll(".text").remove();
+			    })
+		  .append("circle")
+			  .attr("cx", d => xScale(d.utilization))
+			  .attr("cy", d => yScale(d.value))
+			  .attr("r", circleRadius)
+			  .style('opacity', circleOpacity)
+			  .on("mouseover", function(d) {
+			        d3.select(this)
+			          .transition()
+			          .duration(duration)
+			          .attr("r", circleRadiusHover);
+			      })
+			    .on("mouseout", function(d) {
+			        d3.select(this) 
+			          .transition()
+			          .duration(duration)
+			          .attr("r", circleRadius);  
+			      });
 
-	// var bounds = svg.append('g')
-	//   .attr('class', 'bounds');   
+	data.forEach(function(d) { 
+	  d.bounds.forEach(function(d, idx) {
 
-	// var boundsLine = d3.scaleLinear().range([0, 100]).domain([0, 100]);  
+	    svg.append("line")
+		    .style("stroke", color(idx))	
+		    .style("stroke-dasharray", "4,4")
+		    .attr("x1", xScale(0))
+		    .attr("y1", yScale(d.value))
+		    .attr("x2", xScale(100))
+		    .attr("y2", yScale(d.value));
 
-	// bounds.selectAll('.line-bound')
-	//   .data(data).enter()
-	//   .append('g')
-	//   .attr('class', 'line-bound')  
-	//   .append('path')
-	//   .attr('class', 'line')  
-	//   .attr('d', function(d){
- //          return d3.line()
- //            .x(function(d) { return boundsLine(100); })
- //            .y(function(d) { return d.value; })
- //            (d.bounds)
- //        })
-	//   .style('stroke', (d, i) => color(i))  
+	  });
+	});
 
 	/* Add Axis into SVG */
 	var xAxis = d3.axisBottom(xScale).ticks(5);
