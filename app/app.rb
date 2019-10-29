@@ -64,7 +64,7 @@ def report_to_charts_data(report)
 		results << parse_report(reportN)
 	end
 
-	pp results
+	#pp results
 
 	{
 		"throughput" => group_by_metric(results,"Throughput", read_bounds(results, :max_throughput)),
