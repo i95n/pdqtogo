@@ -18,7 +18,7 @@ function renderChart(data, divId){
 	var maxY = 0;
 
 	data.forEach(function(d) { 
-	  d.values.forEach(function(d) {
+	  d.data.forEach(function(d) {
 	    d.utilization = +d.utilization;    
 	    d.value = +d.value;
 
@@ -27,9 +27,17 @@ function renderChart(data, divId){
 	  });
 	});
 
+	data.forEach(function(d) { 
+	  d.bounds.forEach(function(d) {
+	    d.value = +d.value;
+	  });
 
-	var title = data[0].values[0].metric;
-	var units = data[0].values[0].units;
+	  console.log(d.bounds);
+	});
+
+
+	var title = data[0].data[0].metric;
+	var units = data[0].data[0].units;
 
 	/* Scale */
 	var xScale = d3.scaleLinear()
@@ -68,7 +76,7 @@ function renderChart(data, divId){
 	  .attr('class', 'line-group')  
 	  .append('path')
 	  .attr('class', 'line')  
-	  .attr('d', d => line(d.values))
+	  .attr('d', d => line(d.data))
 	  .style('stroke', (d, i) => color(i))
 	  .style('opacity', lineOpacity)
 	  .on("mouseover", function(d) {
@@ -91,14 +99,13 @@ function renderChart(data, divId){
 	        .style("cursor", "none");
 	    });
 
-
 	/* Add circles in the line */
 	lines.selectAll("circle-group")
 	  .data(data).enter()
 	  .append("g")
 	  .style("fill", (d, i) => color(i))
 	  .selectAll("circle")
-	  .data(d => d.values).enter()
+	  .data(d => d.data).enter()
 	  .append("g")
 	  .attr("class", "circle")  
 	  .on("mouseover", function(d) {
@@ -135,6 +142,24 @@ function renderChart(data, divId){
 	          .attr("r", circleRadius);  
 	      });
 
+	// var bounds = svg.append('g')
+	//   .attr('class', 'bounds');   
+
+	// var boundsLine = d3.scaleLinear().range([0, 100]).domain([0, 100]);  
+
+	// bounds.selectAll('.line-bound')
+	//   .data(data).enter()
+	//   .append('g')
+	//   .attr('class', 'line-bound')  
+	//   .append('path')
+	//   .attr('class', 'line')  
+	//   .attr('d', function(d){
+ //          return d3.line()
+ //            .x(function(d) { return boundsLine(100); })
+ //            .y(function(d) { return d.value; })
+ //            (d.bounds)
+ //        })
+	//   .style('stroke', (d, i) => color(i))  
 
 	/* Add Axis into SVG */
 	var xAxis = d3.axisBottom(xScale).ticks(5);
