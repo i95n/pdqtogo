@@ -44,7 +44,7 @@ end
 get '/chart3' do
   	content_type :json
 
-  	model = IO.read("./samples/10mm1.pl")
+  	model = IO.read("./samples/10mm1cl3.pl")
 
   	report = eval_model(model)
   	result = report_to_charts_data(report)
@@ -61,36 +61,81 @@ def report_to_charts_data(report)
 	for i in 0..(reportsIdx.size - 2)
 		reportN = report[reportsIdx[i]..reportsIdx[i+1]]
 		
-		results = results + parse_report(reportN)
+		results << parse_report(reportN)
 	end
 
+	#pp results
+
 	{
-		"throughput" => group_by_metric(results,"Throughput"),
-		"in_service" => group_by_metric(results,"In service"),
-		"queue_length" => group_by_metric(results,"Queue length"),
-		"waiting_line" => group_by_metric(results,"Waiting line"),
-		"waiting_time" => group_by_metric(results,"Waiting time"),
-		"residence_time" => group_by_metric(results,"Residence time"),
+		"throughput" => group_by_metric(results,"Throughput", read_bounds(results, :max_throughput)),
+		"in_service" => group_by_metric(results,"In service", []),
+		"queue_length" => group_by_metric(results,"Queue length", []),
+		"waiting_line" => group_by_metric(results,"Waiting line", []),
+		"waiting_time" => group_by_metric(results,"Waiting time", []),
+		"residence_time" => group_by_metric(results,"Residence time", read_bounds(results, :min_response)),
 	}
 end
 
-def group_by_metric(data, metricName)
+def group_by_metric(data, metricName, bounds)
 	data
+		.map {|s| s[:resources]}
+		.flatten(1)
 		.select { |hash| hash[:metric] == metricName }
 		.group_by{ |s| s[:stream] }
 		.map {|key, values| {
 			:name => key, 
-			:values => values 
+			:data => values,
+			:bounds => bounds 
 		} }
+end
+
+def read_bounds(data, metricName)
+	data[0][:bounds]
+		.select { |hash| hash[:metric] == metricName }
 end
 
 def parse_report(report)
 	content = report.split("\n")
 	printMetrics = false
 
-	results = []
+	bounds = []
+	content.each_with_index do |item, index|
 
+		if item.include?("SYSTEM Performance")
+			printMetrics = !printMetrics
+		end
+
+		if printMetrics && item.include?("Workload")
+
+			if wrklMatch = item.match(': "(?<wrkl>.*)"')
+				wrkl = wrklMatch[1]
+
+				#puts wrkl
+
+				#puts content[index + 2]
+				#puts content[index + 7]
+
+				#puts content[index + 8]
+				#puts content[index + 3]
+
+				bounds << {
+					:stream => wrkl,
+					:metric => :max_throughput,
+					:value => get_digits(content[index + 7])
+				}
+
+				bounds << {
+					:stream => wrkl,
+					:metric => :min_response,
+					:value => get_digits(content[index + 8])
+				}
+			end
+		end	
+	end	
+
+	resources = []
 	utilization = {}
+	printMetrics = false
 
 	content.each_with_index do |item, index|
 
@@ -106,7 +151,7 @@ def parse_report(report)
 			  	metric, resource, stream, value, units = match.captures
 
 			  	#puts "#{metric},#{stream},#{value},#{units}"
-			  	results << {
+			  	resources << {
 			  		:metric => metric.strip, 
 			  		:resource => resource, 
 			  		:stream => stream, 
@@ -122,11 +167,19 @@ def parse_report(report)
 		
 	end	
 
-	results.each do |item|
+
+	resources.each do |item|
 	  item[:utilization] = utilization["#{item[:resource]}-#{item[:stream]}"]
 	end
 
-	results
+	{
+		:resources => resources,
+		:bounds => bounds
+	}
+end
+
+def get_digits line
+	line.match('(?<nr>[.0-9]+)')[0]
 end
 
 def substring_positions(substring, string)

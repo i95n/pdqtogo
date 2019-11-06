@@ -18,7 +18,7 @@ function renderChart(data, divId){
 	var maxY = 0;
 
 	data.forEach(function(d) { 
-	  d.values.forEach(function(d) {
+	  d.data.forEach(function(d) {
 	    d.utilization = +d.utilization;    
 	    d.value = +d.value;
 
@@ -27,9 +27,18 @@ function renderChart(data, divId){
 	  });
 	});
 
+	data.forEach(function(d) { 
+	  d.bounds.forEach(function(d) {
+	    d.value = +d.value;
 
-	var title = data[0].values[0].metric;
-	var units = data[0].values[0].units;
+		if(maxY < d.value)
+			maxY = d.value; 
+	  });
+	});
+
+
+	var title = data[0].data[0].metric;
+	var units = data[0].data[0].units;
 
 	/* Scale */
 	var xScale = d3.scaleLinear()
@@ -68,7 +77,7 @@ function renderChart(data, divId){
 	  .attr('class', 'line-group')  
 	  .append('path')
 	  .attr('class', 'line')  
-	  .attr('d', d => line(d.values))
+	  .attr('d', d => line(d.data))
 	  .style('stroke', (d, i) => color(i))
 	  .style('opacity', lineOpacity)
 	  .on("mouseover", function(d) {
@@ -91,50 +100,63 @@ function renderChart(data, divId){
 	        .style("cursor", "none");
 	    });
 
-
 	/* Add circles in the line */
-	lines.selectAll("circle-group")
+	lines
+	  .selectAll("circle-group")
 	  .data(data).enter()
-	  .append("g")
-	  .style("fill", (d, i) => color(i))
+		  .append("g")
+		  	.style("fill", (d, i) => color(i))
 	  .selectAll("circle")
-	  .data(d => d.values).enter()
-	  .append("g")
-	  .attr("class", "circle")  
-	  .on("mouseover", function(d) {
-	      d3.select(this)     
-	        .style("cursor", "pointer")
-	        .append("text")
-	        .attr("class", "text")
-	        .text(`${d.value}`)
-	        .attr("x", d => xScale(d.utilization) + 5)
-	        .attr("y", d => yScale(d.value) - 10);
-	    })
-	  .on("mouseout", function(d) {
-	      d3.select(this)
-	        .style("cursor", "none")  
-	        .transition()
-	        .duration(duration)
-	        .selectAll(".text").remove();
-	    })
-	  .append("circle")
-	  .attr("cx", d => xScale(d.utilization))
-	  .attr("cy", d => yScale(d.value))
-	  .attr("r", circleRadius)
-	  .style('opacity', circleOpacity)
-	  .on("mouseover", function(d) {
-	        d3.select(this)
-	          .transition()
-	          .duration(duration)
-	          .attr("r", circleRadiusHover);
-	      })
-	    .on("mouseout", function(d) {
-	        d3.select(this) 
-	          .transition()
-	          .duration(duration)
-	          .attr("r", circleRadius);  
-	      });
+	  .data(d => d.data).enter()
+		  .append("g")
+			  .attr("class", "circle")  
+			  .on("mouseover", function(d) {
+			      d3.select(this)     
+			        .style("cursor", "pointer")
+			        .append("text")
+			        .attr("class", "text")
+			        .text(`${d.value}`)
+			        .attr("x", d => xScale(d.utilization) + 5)
+			        .attr("y", d => yScale(d.value) - 10);
+			    })
+			  .on("mouseout", function(d) {
+			      d3.select(this)
+			        .style("cursor", "none")  
+			        .transition()
+			        .duration(duration)
+			        .selectAll(".text").remove();
+			    })
+		  .append("circle")
+			  .attr("cx", d => xScale(d.utilization))
+			  .attr("cy", d => yScale(d.value))
+			  .attr("r", circleRadius)
+			  .style('opacity', circleOpacity)
+			  .on("mouseover", function(d) {
+			        d3.select(this)
+			          .transition()
+			          .duration(duration)
+			          .attr("r", circleRadiusHover);
+			      })
+			    .on("mouseout", function(d) {
+			        d3.select(this) 
+			          .transition()
+			          .duration(duration)
+			          .attr("r", circleRadius);  
+			      });
 
+	data.forEach(function(d) { 
+	  d.bounds.forEach(function(d, idx) {
+
+	    svg.append("line")
+		    .style("stroke", color(idx))	
+		    .style("stroke-dasharray", "4,4")
+		    .attr("x1", xScale(0))
+		    .attr("y1", yScale(d.value))
+		    .attr("x2", xScale(100))
+		    .attr("y2", yScale(d.value));
+
+	  });
+	});
 
 	/* Add Axis into SVG */
 	var xAxis = d3.axisBottom(xScale).ticks(5);
